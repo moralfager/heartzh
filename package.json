@@ -1,12 +1,19 @@
 {
-  "name": "psychotest",
-  "version": "0.1.0",
+  "name": "psychology-love-test",
+  "version": "1.0.0",
+  "description": "Психологические тесты с красивым интерфейсом и админ-панелью",
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "docker:build": "docker build -t psychology-love-test .",
+    "docker:run": "docker run -p 3000:3000 psychology-love-test",
+    "docker:up": "docker-compose up --build",
+    "docker:prod": "docker-compose -f docker-compose.prod.yml up -d --build",
+    "docker:down": "docker-compose down",
+    "docker:logs": "docker-compose logs -f"
   },
   "dependencies": {
     "next": "15.5.6",
@@ -29,5 +36,21 @@
   "engines": {
     "node": ">=18.0.0",
     "npm": ">=8.0.0"
-  }
+  },
+  "keywords": [
+    "psychology",
+    "love",
+    "test",
+    "nextjs",
+    "react",
+    "typescript",
+    "docker"
+  ],
+  "author": "moralfager",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/moralfager/heartzh.git"
+  },
+  "homepage": "https://github.com/moralfager/heartzh#readme"
 }

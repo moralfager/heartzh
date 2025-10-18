@@ -6,7 +6,11 @@ const nextConfig = {
   },
   images: {
     unoptimized: true
-  }
+  },
+  // Docker оптимизации
+  compress: true,
+  poweredByHeader: false,
+  generateEtags: false
 }
 
 module.exports = nextConfig
