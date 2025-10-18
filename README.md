@@ -1,36 +1,193 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 💕 Психология Любви - Тест
 
-## Getting Started
+Современное веб-приложение для психологических тестов с красивым интерфейсом и админ-панелью.
 
-First, run the development server:
+## ✨ Возможности
 
+- 🧠 **Психологические тесты** - "Психология Любви" и "Как ты проявляешь свою любовь?"
+- 📊 **Админ-панель** - просмотр результатов, управление тестами
+- ✏️ **Редактор вопросов** - добавление, редактирование, удаление вопросов
+- 📱 **Адаптивный дизайн** - работает на всех устройствах
+- 🎨 **Современный UI** - красивый интерфейс с анимациями
+- 🔒 **Безопасность** - защищенная админ-панель
+
+## 🚀 Быстрый старт
+
+### Установка
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Разработка
+```bash
+npm run dev
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Сборка
+```bash
+npm run build
+npm start
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 📁 Структура проекта
 
-## Learn More
+```
+src/
+├── app/                 # Next.js App Router
+│   ├── admin/          # Админ-панель
+│   ├── tests/          # Страницы тестов
+│   └── api/            # API endpoints
+├── components/          # React компоненты
+├── lib/               # Утилиты и типы
+└── hooks/             # Custom hooks
 
-To learn more about Next.js, take a look at the following resources:
+public/
+├── tests/             # JSON файлы тестов
+└── images/            # Статические изображения
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 🛠️ Технологии
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- **Next.js 15** - React фреймворк
+- **TypeScript** - типизация
+- **Tailwind CSS** - стилизация
+- **Lucide React** - иконки
+- **LocalStorage** - хранение данных
 
-## Deploy on Vercel
+## 📊 Админ-панель
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### Доступ
+- URL: `/admin`
+- Логин: `admin`
+- Пароль: `psychotest2024`
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### Возможности
+- Просмотр результатов тестов
+- Статистика пользователей
+- Экспорт данных в CSV
+- Управление тестами
+- Редактирование вопросов
+
+## 🎯 Тесты
+
+### 1. Психология Любви
+- **4 блока**: Партнер в любви, Ценности, Язык любви, Реакции на конфликты
+- **20 вопросов** с вариантами ответов
+- **Результат**: тип личности и рекомендации
+
+### 2. Как ты проявляешь свою любовь?
+- **4 блока**: Проявления любви, Подарки, Идеальные свидания, Забота о партнере
+- **50 вопросов** с вариантами ответов
+- **Результат**: профиль проявлений любви
+
+## 🚀 Деплой
+
+### Требования
+- Node.js 18+
+- npm 8+
+- 1GB RAM (рекомендуется 2GB)
+
+### Быстрый деплой
+```bash
+# 1. Загрузите файлы на сервер
+# 2. Установите зависимости
+npm install --production
+
+# 3. Соберите проект
+npm run build
+
+# 4. Запустите
+npm start
+```
+
+### С PM2 (рекомендуется)
+```bash
+# Установка PM2
+npm install -g pm2
+
+# Запуск
+pm2 start ecosystem.config.js
+
+# Автозапуск
+pm2 startup
+pm2 save
+```
+
+### С Nginx
+```bash
+# Копирование конфигурации
+sudo cp nginx.conf /etc/nginx/sites-available/psychology-love
+sudo ln -s /etc/nginx/sites-available/psychology-love /etc/nginx/sites-enabled/
+
+# Перезапуск
+sudo systemctl reload nginx
+```
+
+## 📋 Скрипты
+
+```bash
+npm run dev          # Разработка
+npm run build        # Сборка
+npm run start        # Продакшен
+npm run deploy       # Сборка + запуск
+npm run pm2:start    # Запуск с PM2
+npm run pm2:stop     # Остановка PM2
+npm run pm2:restart  # Перезапуск PM2
+npm run pm2:logs     # Логи PM2
+```
+
+## 🔧 Настройка
+
+### Переменные окружения
+```env
+NODE_ENV=production
+NEXT_PUBLIC_APP_URL=https://your-domain.com
+```
+
+### База данных (опционально)
+```env
+DATABASE_URL="mysql://user:pass@host:port/db"
+ADMIN_USERNAME=admin
+ADMIN_PASSWORD=secure_password
+```
+
+## 📈 Мониторинг
+
+### PM2
+```bash
+pm2 status           # Статус процессов
+pm2 logs             # Логи
+pm2 monit            # Мониторинг
+```
+
+### Система
+```bash
+# Проверка портов
+netstat -tlnp | grep :3000
+
+# Логи системы
+journalctl -u your-service -f
+```
+
+## 🛡️ Безопасность
+
+- ✅ Защищенная админ-панель
+- ✅ Валидация входных данных
+- ✅ Защита от XSS
+- ✅ HTTPS поддержка
+- ✅ Security headers
+
+## 📞 Поддержка
+
+При возникновении проблем:
+1. Проверьте логи: `pm2 logs` или `journalctl`
+2. Проверьте статус: `pm2 status`
+3. Проверьте конфигурацию: `nginx -t`
+
+## 📄 Лицензия
+
+MIT License - используйте свободно для коммерческих и некоммерческих проектов.
+
+---
+
+**Создано с ❤️ для изучения психологии любви**

@@ -1,0 +1,47 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model TestResult {
+  id           String   @id @default(cuid())
+  sessionId    String   @map("session_id")
+  testId       String   @map("test_id")
+  testTitle    String   @map("test_title")
+  completedAt  DateTime @map("completed_at") @default(now())
+  answers      Json
+  results      Json
+  createdAt    DateTime @map("created_at") @default(now())
+
+  @@map("test_results")
+  @@index([sessionId])
+  @@index([testId])
+  @@index([completedAt])
+}
+
+model Test {
+  id             String   @id @default(cuid())
+  slug           String   @unique
+  title          String
+  subtitle       String?
+  category       String?
+  estMinutes     Int      @map("est_minutes") @default(5)
+  questionsCount Int      @map("questions_count") @default(0)
+  isPseudo       Boolean  @map("is_pseudo") @default(false)
+  languages      String   @default("[\"ru\"]") // JSON array as string
+  questions      Json?
+  scoring        Json?
+  resultRules    Json?    @map("result_rules")
+  createdAt      DateTime @map("created_at") @default(now())
+  updatedAt      DateTime @map("updated_at") @updatedAt
+
+  @@map("tests")
+  @@index([slug])
+}

@@ -1,0 +1,671 @@
+{
+  "meta": {
+    "id": "love-expressions-001",
+    "slug": "love-expressions",
+    "title": "Как ты проявляешь свою любовь?",
+    "subtitle": "Узнай свой стиль проявления любви, предпочтения в подарках и идеальные свидания",
+    "category": "relationships",
+    "tags": ["проявления любви", "подарки", "свидания", "романтика"],
+    "estMinutes": 8,
+    "questionsCount": 50,
+    "isPseudo": true,
+    "languages": ["ru", "kz"],
+    "rating": 4.7
+  },
+  "questions": [
+    {
+      "id": "q1",
+      "block": 1,
+      "text": "Как ты чаще всего показываешь свою любовь?",
+      "scale": "single",
+      "options": [
+        {"id": "a", "label": "Говорю тёплые слова и комплименты", "domains": {"E_WORDS": 5}},
+        {"id": "b", "label": "Провожу качественное время вместе", "domains": {"E_TIME": 5}},
+        {"id": "c", "label": "Дарю подарки и сюрпризы", "domains": {"E_GIFTS": 5}},
+        {"id": "d", "label": "Помогаю и забочусь", "domains": {"E_SERVICE": 5}},
+        {"id": "e", "label": "Обнимаю и прикасаюсь", "domains": {"E_TOUCH": 5}}
+      ]
+    },
+    {
+      "id": "q2",
+      "block": 1,
+      "text": "Когда ты хочешь порадовать партнёра, что делаешь в первую очередь?",
+      "scale": "single",
+      "options": [
+        {"id": "a", "label": "Говорю что-то приятное", "domains": {"E_WORDS": 5}},
+        {"id": "b", "label": "Планирую время только для нас двоих", "domains": {"E_TIME": 5}},
+        {"id": "c", "label": "Покупаю что-то особенное", "domains": {"E_GIFTS": 5}},
+        {"id": "d", "label": "Делаю что-то полезное для него", "domains": {"E_SERVICE": 5}},
+        {"id": "e", "label": "Обнимаю и целую", "domains": {"E_TOUCH": 5}}
+      ]
+    },
+    {
+      "id": "q3",
+      "block": 1,
+      "text": "Как часто ты говоришь партнёру о своих чувствах?",
+      "scale": "likert",
+      "options": [
+        {"id": "1", "label": "Очень редко", "domains": {"E_WORDS": 1}},
+        {"id": "2", "label": "Редко", "domains": {"E_WORDS": 2}},
+        {"id": "3", "label": "Иногда", "domains": {"E_WORDS": 3}},
+        {"id": "4", "label": "Часто", "domains": {"E_WORDS": 4}},
+        {"id": "5", "label": "Очень часто", "domains": {"E_WORDS": 5}}
+      ]
+    },
+    {
+      "id": "q4",
+      "block": 1,
+      "text": "Что для тебя важнее в проявлении любви?",
+      "scale": "single",
+      "options": [
+        {"id": "a", "label": "Слова и признания", "domains": {"E_WORDS": 5}},
+        {"id": "b", "label": "Время, проведённое вместе", "domains": {"E_TIME": 5}},
+        {"id": "c", "label": "Материальные знаки внимания", "domains": {"E_GIFTS": 5}},
+        {"id": "d", "label": "Практическая помощь", "domains": {"E_SERVICE": 5}},
+        {"id": "e", "label": "Физическая близость", "domains": {"E_TOUCH": 5}}
+      ]
+    },
+    {
+      "id": "q5",
+      "block": 1,
+      "text": "Как ты предпочитаешь получать любовь от партнёра?",
+      "scale": "single",
+      "options": [
+        {"id": "a", "label": "Через слова и комплименты", "domains": {"E_WORDS": 5}},
+        {"id": "b", "label": "Через время, посвящённое мне", "domains": {"E_TIME": 5}},
+        {"id": "c", "label": "Через подарки и сюрпризы", "domains": {"E_GIFTS": 5}},
+        {"id": "d", "label": "Через заботу и помощь", "domains": {"E_SERVICE": 5}},
+        {"id": "e", "label": "Через прикосновения и объятия", "domains": {"E_TOUCH": 5}}
+      ]
+    },
+    {
+      "id": "q6",
+      "block": 1,
+      "text": "Когда ты расстроен, как партнёр может тебя утешить?",
+      "scale": "single",
+      "options": [
+        {"id": "a", "label": "Сказать что-то ободряющее", "domains": {"E_WORDS": 5}},
+        {"id": "b", "label": "Побыть рядом и выслушать", "domains": {"E_TIME": 5}},
+        {"id": "c", "label": "Подарить что-то приятное", "domains": {"E_GIFTS": 5}},
+        {"id": "d", "label": "Помочь решить проблему", "domains": {"E_SERVICE": 5}},
+        {"id": "e", "label": "Обнять и приласкать", "domains": {"E_TOUCH": 5}}
+      ]
+    },
+    {
+      "id": "q7",
+      "block": 1,
+      "text": "Как часто ты планируешь романтические моменты?",
+      "scale": "likert",
+      "options": [
+        {"id": "1", "label": "Никогда", "domains": {"E_ROMANTIC": 1}},
+        {"id": "2", "label": "Редко", "domains": {"E_ROMANTIC": 2}},
+        {"id": "3", "label": "Иногда", "domains": {"E_ROMANTIC": 3}},
+        {"id": "4", "label": "Часто", "domains": {"E_ROMANTIC": 4}},
+        {"id": "5", "label": "Очень часто", "domains": {"E_ROMANTIC": 5}}
+      ]
+    },
+    {
+      "id": "q8",
+      "block": 1,
+      "text": "Что для тебя означает 'быть романтичным'?",
+      "scale": "single",
+      "options": [
+        {"id": "a", "label": "Говорить красивые слова", "domains": {"E_WORDS": 5, "E_ROMANTIC": 5}},
+        {"id": "b", "label": "Организовывать особые моменты", "domains": {"E_TIME": 5, "E_ROMANTIC": 5}},
+        {"id": "c", "label": "Делать сюрпризы и подарки", "domains": {"E_GIFTS": 5, "E_ROMANTIC": 5}},
+        {"id": "d", "label": "Заботиться и ухаживать", "domains": {"E_SERVICE": 5, "E_ROMANTIC": 5}},
+        {"id": "e", "label": "Быть нежным и ласковым", "domains": {"E_TOUCH": 5, "E_ROMANTIC": 5}}
+      ]
+    },
+    {
+      "id": "q9",
+      "block": 1,
+      "text": "Как ты отмечаешь важные даты в отношениях?",
+      "scale": "single",
+      "options": [
+        {"id": "a", "label": "Говорю особые слова", "domains": {"E_WORDS": 5}},
+        {"id": "b", "label": "Провожу время вместе", "domains": {"E_TIME": 5}},
+        {"id": "c", "label": "Дарю подарки", "domains": {"E_GIFTS": 5}},
+        {"id": "d", "label": "Делаю что-то особенное", "domains": {"E_SERVICE": 5}},
+        {"id": "e", "label": "Показываю нежность", "domains": {"E_TOUCH": 5}}
+      ]
+    },
+    {
+      "id": "q10",
+      "block": 1,
+      "text": "Что заставляет тебя чувствовать себя любимым?",
+      "scale": "single",
+      "options": [
+        {"id": "a", "label": "Когда говорят 'я люблю тебя'", "domains": {"E_WORDS": 5}},
+        {"id": "b", "label": "Когда уделяют мне время", "domains": {"E_TIME": 5}},
+        {"id": "c", "label": "Когда дарят что-то особенное", "domains": {"E_GIFTS": 5}},
+        {"id": "d", "label": "Когда помогают без просьбы", "domains": {"E_SERVICE": 5}},
+        {"id": "e", "label": "Когда обнимают и целуют", "domains": {"E_TOUCH": 5}}
+      ]
+    },
+    {
+      "id": "q11",
+      "block": 1,
+      "text": "Как ты извиняешься, когда был неправ?",
+      "scale": "single",
+      "options": [
+        {"id": "a", "label": "Говорю искренние слова", "domains": {"E_WORDS": 5}},
+        {"id": "b", "label": "Провожу время, объясняя ситуацию", "domains": {"E_TIME": 5}},
+        {"id": "c", "label": "Делаю подарок как знак извинения", "domains": {"E_GIFTS": 5}},
+        {"id": "d", "label": "Исправляю ситуацию делами", "domains": {"E_SERVICE": 5}},
+        {"id": "e", "label": "Обнимаю и показываю нежность", "domains": {"E_TOUCH": 5}}
+      ]
+    },
+    {
+      "id": "q12",
+      "block": 1,
+      "text": "Как ты поддерживаешь партнёра в трудные моменты?",
+      "scale": "single",
+      "options": [
+        {"id": "a", "label": "Говорю ободряющие слова", "domains": {"E_WORDS": 5}},
+        {"id": "b", "label": "Бываю рядом и слушаю", "domains": {"E_TIME": 5}},
+        {"id": "c", "label": "Делаю приятный сюрприз", "domains": {"E_GIFTS": 5}},
+        {"id": "d", "label": "Помогаю решить проблемы", "domains": {"E_SERVICE": 5}},
+        {"id": "e", "label": "Обнимаю и утешаю", "domains": {"E_TOUCH": 5}}
+      ]
+    },
+    {
+      "id": "q13",
+      "block": 1,
+      "text": "Как часто ты делаешь сюрпризы партнёру?",
+      "scale": "likert",
+      "options": [
+        {"id": "1", "label": "Никогда", "domains": {"E_SURPRISE": 1}},
+        {"id": "2", "label": "Редко", "domains": {"E_SURPRISE": 2}},
+        {"id": "3", "label": "Иногда", "domains": {"E_SURPRISE": 3}},
+        {"id": "4", "label": "Часто", "domains": {"E_SURPRISE": 4}},
+        {"id": "5", "label": "Очень часто", "domains": {"E_SURPRISE": 5}}
+      ]
+    },
+    {
+      "id": "q14",
+      "block": 2,
+      "text": "Какой подарок ты бы выбрал для партнёра на день рождения?",
+      "scale": "single",
+      "options": [
+        {"id": "a", "label": "Дорогой и престижный", "domains": {"G_LUXURY": 5}},
+        {"id": "b", "label": "Практичный и полезный", "domains": {"G_PRACTICAL": 5}},
+        {"id": "c", "label": "Сделанный своими руками", "domains": {"G_HANDMADE": 5}},
+        {"id": "d", "label": "Эмоционально значимый", "domains": {"G_EMOTIONAL": 5}},
+        {"id": "e", "label": "Опыт или впечатления", "domains": {"G_EXPERIENCE": 5}}
+      ]
+    },
+    {
+      "id": "q15",
+      "block": 2,
+      "text": "Что для тебя важнее в подарке?",
+      "scale": "single",
+      "options": [
+        {"id": "a", "label": "Стоимость и престиж", "domains": {"G_LUXURY": 5}},
+        {"id": "b", "label": "Практичность и польза", "domains": {"G_PRACTICAL": 5}},
+        {"id": "c", "label": "Время, потраченное на создание", "domains": {"G_HANDMADE": 5}},
+        {"id": "d", "label": "Эмоциональная ценность", "domains": {"G_EMOTIONAL": 5}},
+        {"id": "e", "label": "Воспоминания и впечатления", "domains": {"G_EXPERIENCE": 5}}
+      ]
+    },
+    {
+      "id": "q16",
+      "block": 2,
+      "text": "Какой подарок ты бы больше всего оценил?",
+      "scale": "single",
+      "options": [
+        {"id": "a", "label": "Дорогие украшения или аксессуары", "domains": {"G_LUXURY": 5}},
+        {"id": "b", "label": "Полезные вещи для дома", "domains": {"G_PRACTICAL": 5}},
+        {"id": "c", "label": "Что-то, сделанное вручную", "domains": {"G_HANDMADE": 5}},
+        {"id": "d", "label": "Что-то, связанное с нашими воспоминаниями", "domains": {"G_EMOTIONAL": 5}},
+        {"id": "e", "label": "Билеты на концерт или путешествие", "domains": {"G_EXPERIENCE": 5}}
+      ]
+    },
+    {
+      "id": "q17",
+      "block": 2,
+      "text": "Как часто ты даришь подарки без повода?",
+      "scale": "likert",
+      "options": [
+        {"id": "1", "label": "Никогда", "domains": {"G_SPONTANEOUS": 1}},
+        {"id": "2", "label": "Редко", "domains": {"G_SPONTANEOUS": 2}},
+        {"id": "3", "label": "Иногда", "domains": {"G_SPONTANEOUS": 3}},
+        {"id": "4", "label": "Часто", "domains": {"G_SPONTANEOUS": 4}},
+        {"id": "5", "label": "Очень часто", "domains": {"G_SPONTANEOUS": 5}}
+      ]
+    },
+    {
+      "id": "q18",
+      "block": 2,
+      "text": "Какой подарок лучше всего показывает твою любовь?",
+      "scale": "single",
+      "options": [
+        {"id": "a", "label": "Дорогой и роскошный", "domains": {"G_LUXURY": 5}},
+        {"id": "b", "label": "Полезный и нужный", "domains": {"G_PRACTICAL": 5}},
+        {"id": "c", "label": "Сделанный с душой", "domains": {"G_HANDMADE": 5}},
+        {"id": "d", "label": "Связанный с нашими отношениями", "domains": {"G_EMOTIONAL": 5}},
+        {"id": "e", "label": "Создающий новые воспоминания", "domains": {"G_EXPERIENCE": 5}}
+      ]
+    },
+    {
+      "id": "q19",
+      "block": 2,
+      "text": "Что ты думаешь о дорогих подарках?",
+      "scale": "likert",
+      "options": [
+        {"id": "1", "label": "Не важны вообще", "domains": {"G_LUXURY": 1}},
+        {"id": "2", "label": "Не очень важны", "domains": {"G_LUXURY": 2}},
+        {"id": "3", "label": "Нейтрально", "domains": {"G_LUXURY": 3}},
+        {"id": "4", "label": "Довольно важны", "domains": {"G_LUXURY": 4}},
+        {"id": "5", "label": "Очень важны", "domains": {"G_LUXURY": 5}}
+      ]
+    },
+    {
+      "id": "q20",
+      "block": 2,
+      "text": "Какой подарок ты бы сделал на годовщину отношений?",
+      "scale": "single",
+      "options": [
+        {"id": "a", "label": "Дорогие украшения", "domains": {"G_LUXURY": 5}},
+        {"id": "b", "label": "Что-то практичное для дома", "domains": {"G_PRACTICAL": 5}},
+        {"id": "c", "label": "Альбом с фотографиями", "domains": {"G_HANDMADE": 5}},
+        {"id": "d", "label": "Что-то, напоминающее о наших моментах", "domains": {"G_EMOTIONAL": 5}},
+        {"id": "e", "label": "Романтическое путешествие", "domains": {"G_EXPERIENCE": 5}}
+      ]
+    },
+    {
+      "id": "q21",
+      "block": 2,
+      "text": "Что важнее: цена подарка или мысль, вложенная в него?",
+      "scale": "single",
+      "options": [
+        {"id": "a", "label": "Цена важнее", "domains": {"G_LUXURY": 5}},
+        {"id": "b", "label": "Практичность важнее", "domains": {"G_PRACTICAL": 5}},
+        {"id": "c", "label": "Время, потраченное на создание", "domains": {"G_HANDMADE": 5}},
+        {"id": "d", "label": "Эмоциональная значимость", "domains": {"G_EMOTIONAL": 5}},
+        {"id": "e", "label": "Впечатления и воспоминания", "domains": {"G_EXPERIENCE": 5}}
+      ]
+    },
+    {
+      "id": "q22",
+      "block": 2,
+      "text": "Как ты предпочитаешь получать подарки?",
+      "scale": "single",
+      "options": [
+        {"id": "a", "label": "Дорогие и престижные", "domains": {"G_LUXURY": 5}},
+        {"id": "b", "label": "Полезные и практичные", "domains": {"G_PRACTICAL": 5}},
+        {"id": "c", "label": "Сделанные своими руками", "domains": {"G_HANDMADE": 5}},
+        {"id": "d", "label": "Эмоционально значимые", "domains": {"G_EMOTIONAL": 5}},
+        {"id": "e", "label": "Опыты и впечатления", "domains": {"G_EXPERIENCE": 5}}
+      ]
+    },
+    {
+      "id": "q23",
+      "block": 2,
+      "text": "Как часто ты даришь цветы?",
+      "scale": "likert",
+      "options": [
+        {"id": "1", "label": "Никогда", "domains": {"G_TRADITIONAL": 1}},
+        {"id": "2", "label": "Редко", "domains": {"G_TRADITIONAL": 2}},
+        {"id": "3", "label": "Иногда", "domains": {"G_TRADITIONAL": 3}},
+        {"id": "4", "label": "Часто", "domains": {"G_TRADITIONAL": 4}},
+        {"id": "5", "label": "Очень часто", "domains": {"G_TRADITIONAL": 5}}
+      ]
+    },
+    {
+      "id": "q24",
+      "block": 2,
+      "text": "Какой подарок лучше всего подходит для извинения?",
+      "scale": "single",
+      "options": [
+        {"id": "a", "label": "Дорогой подарок", "domains": {"G_LUXURY": 5}},
+        {"id": "b", "label": "Что-то полезное", "domains": {"G_PRACTICAL": 5}},
+        {"id": "c", "label": "Сделанное своими руками", "domains": {"G_HANDMADE": 5}},
+        {"id": "d", "label": "Символизирующее наши отношения", "domains": {"G_EMOTIONAL": 5}},
+        {"id": "e", "label": "Время, проведённое вместе", "domains": {"G_EXPERIENCE": 5}}
+      ]
+    },
+    {
+      "id": "q25",
+      "block": 2,
+      "text": "Что ты думаешь о традиционных подарках (цветы, конфеты)?",
+      "scale": "likert",
+      "options": [
+        {"id": "1", "label": "Не нравятся", "domains": {"G_TRADITIONAL": 1}},
+        {"id": "2", "label": "Не очень нравятся", "domains": {"G_TRADITIONAL": 2}},
+        {"id": "3", "label": "Нейтрально", "domains": {"G_TRADITIONAL": 3}},
+        {"id": "4", "label": "Нравятся", "domains": {"G_TRADITIONAL": 4}},
+        {"id": "5", "label": "Очень нравятся", "domains": {"G_TRADITIONAL": 5}}
+      ]
+    },
+    {
+      "id": "q26",
+      "block": 3,
+      "text": "Какое свидание ты считаешь идеальным?",
+      "scale": "single",
+      "options": [
+        {"id": "a", "label": "Дорогой ресторан и театр", "domains": {"D_LUXURY": 5}},
+        {"id": "b", "label": "Домашний ужин и фильм", "domains": {"D_HOMEY": 5}},
+        {"id": "c", "label": "Активный отдых на природе", "domains": {"D_ACTIVE": 5}},
+        {"id": "d", "label": "Романтическая прогулка", "domains": {"D_ROMANTIC": 5}},
+        {"id": "e", "label": "Путешествие или поездка", "domains": {"D_ADVENTURE": 5}}
+      ]
+    },
+    {
+      "id": "q27",
+      "block": 3,
+      "text": "Где ты предпочитаешь проводить свидания?",
+      "scale": "single",
+      "options": [
+        {"id": "a", "label": "В дорогих местах", "domains": {"D_LUXURY": 5}},
+        {"id": "b", "label": "Дома, в уютной обстановке", "domains": {"D_HOMEY": 5}},
+        {"id": "c", "label": "На природе или в парке", "domains": {"D_ACTIVE": 5}},
+        {"id": "d", "label": "В романтических местах", "domains": {"D_ROMANTIC": 5}},
+        {"id": "e", "label": "В новых и необычных местах", "domains": {"D_ADVENTURE": 5}}
+      ]
+    },
+    {
+      "id": "q28",
+      "block": 3,
+      "text": "Как часто ты планируешь свидания?",
+      "scale": "likert",
+      "options": [
+        {"id": "1", "label": "Никогда", "domains": {"D_PLANNING": 1}},
+        {"id": "2", "label": "Редко", "domains": {"D_PLANNING": 2}},
+        {"id": "3", "label": "Иногда", "domains": {"D_PLANNING": 3}},
+        {"id": "4", "label": "Часто", "domains": {"D_PLANNING": 4}},
+        {"id": "5", "label": "Очень часто", "domains": {"D_PLANNING": 5}}
+      ]
+    },
+    {
+      "id": "q29",
+      "block": 3,
+      "text": "Что для тебя важнее в свидании?",
+      "scale": "single",
+      "options": [
+        {"id": "a", "label": "Престиж и статус места", "domains": {"D_LUXURY": 5}},
+        {"id": "b", "label": "Уют и комфорт", "domains": {"D_HOMEY": 5}},
+        {"id": "c", "label": "Активность и движение", "domains": {"D_ACTIVE": 5}},
+        {"id": "d", "label": "Романтика и атмосфера", "domains": {"D_ROMANTIC": 5}},
+        {"id": "e", "label": "Новые впечатления", "domains": {"D_ADVENTURE": 5}}
+      ]
+    },
+    {
+      "id": "q30",
+      "block": 3,
+      "text": "Какой тип свидания ты предпочитаешь?",
+      "scale": "single",
+      "options": [
+        {"id": "a", "label": "Формальное и элегантное", "domains": {"D_LUXURY": 5}},
+        {"id": "b", "label": "Неформальное и расслабленное", "domains": {"D_HOMEY": 5}},
+        {"id": "c", "label": "Активное и энергичное", "domains": {"D_ACTIVE": 5}},
+        {"id": "d", "label": "Романтическое и нежное", "domains": {"D_ROMANTIC": 5}},
+        {"id": "e", "label": "Приключенческое и необычное", "domains": {"D_ADVENTURE": 5}}
+      ]
+    },
+    {
+      "id": "q31",
+      "block": 3,
+      "text": "Как ты планируешь романтические вечера?",
+      "scale": "single",
+      "options": [
+        {"id": "a", "label": "Бронирую дорогие рестораны", "domains": {"D_LUXURY": 5}},
+        {"id": "b", "label": "Готовлю дома что-то особенное", "domains": {"D_HOMEY": 5}},
+        {"id": "c", "label": "Планирую активные развлечения", "domains": {"D_ACTIVE": 5}},
+        {"id": "d", "label": "Создаю романтическую атмосферу", "domains": {"D_ROMANTIC": 5}},
+        {"id": "e", "label": "Ищу новые интересные места", "domains": {"D_ADVENTURE": 5}}
+      ]
+    },
+    {
+      "id": "q32",
+      "block": 3,
+      "text": "Что делает свидание особенным для тебя?",
+      "scale": "single",
+      "options": [
+        {"id": "a", "label": "Дорогие и престижные места", "domains": {"D_LUXURY": 5}},
+        {"id": "b", "label": "Уютная домашняя атмосфера", "domains": {"D_HOMEY": 5}},
+        {"id": "c", "label": "Активность и движение", "domains": {"D_ACTIVE": 5}},
+        {"id": "d", "label": "Романтическая обстановка", "domains": {"D_ROMANTIC": 5}},
+        {"id": "e", "label": "Новые впечатления и приключения", "domains": {"D_ADVENTURE": 5}}
+      ]
+    },
+    {
+      "id": "q33",
+      "block": 3,
+      "text": "Как часто ты устраиваешь сюрпризы на свиданиях?",
+      "scale": "likert",
+      "options": [
+        {"id": "1", "label": "Никогда", "domains": {"D_SURPRISE": 1}},
+        {"id": "2", "label": "Редко", "domains": {"D_SURPRISE": 2}},
+        {"id": "3", "label": "Иногда", "domains": {"D_SURPRISE": 3}},
+        {"id": "4", "label": "Часто", "domains": {"D_SURPRISE": 4}},
+        {"id": "5", "label": "Очень часто", "domains": {"D_SURPRISE": 5}}
+      ]
+    },
+    {
+      "id": "q34",
+      "block": 3,
+      "text": "Где ты бы провёл идеальное первое свидание?",
+      "scale": "single",
+      "options": [
+        {"id": "a", "label": "В дорогом ресторане", "domains": {"D_LUXURY": 5}},
+        {"id": "b", "label": "Дома за ужином", "domains": {"D_HOMEY": 5}},
+        {"id": "c", "label": "В парке или на природе", "domains": {"D_ACTIVE": 5}},
+        {"id": "d", "label": "В романтическом кафе", "domains": {"D_ROMANTIC": 5}},
+        {"id": "e", "label": "В необычном месте", "domains": {"D_ADVENTURE": 5}}
+      ]
+    },
+    {
+      "id": "q35",
+      "block": 3,
+      "text": "Что важнее в свидании: место или компания?",
+      "scale": "single",
+      "options": [
+        {"id": "a", "label": "Место важнее", "domains": {"D_LUXURY": 5}},
+        {"id": "b", "label": "Компания важнее", "domains": {"D_HOMEY": 5}},
+        {"id": "c", "label": "Активность важнее", "domains": {"D_ACTIVE": 5}},
+        {"id": "d", "label": "Атмосфера важнее", "domains": {"D_ROMANTIC": 5}},
+        {"id": "e", "label": "Впечатления важнее", "domains": {"D_ADVENTURE": 5}}
+      ]
+    },
+    {
+      "id": "q36",
+      "block": 3,
+      "text": "Как ты предпочитаешь проводить выходные с партнёром?",
+      "scale": "single",
+      "options": [
+        {"id": "a", "label": "В дорогих местах", "domains": {"D_LUXURY": 5}},
+        {"id": "b", "label": "Дома в уюте", "domains": {"D_HOMEY": 5}},
+        {"id": "c", "label": "Активно на природе", "domains": {"D_ACTIVE": 5}},
+        {"id": "d", "label": "Романтично и нежно", "domains": {"D_ROMANTIC": 5}},
+        {"id": "e", "label": "Исследуя новые места", "domains": {"D_ADVENTURE": 5}}
+      ]
+    },
+    {
+      "id": "q37",
+      "block": 3,
+      "text": "Как часто ты меняешь места для свиданий?",
+      "scale": "likert",
+      "options": [
+        {"id": "1", "label": "Никогда", "domains": {"D_VARIETY": 1}},
+        {"id": "2", "label": "Редко", "domains": {"D_VARIETY": 2}},
+        {"id": "3", "label": "Иногда", "domains": {"D_VARIETY": 3}},
+        {"id": "4", "label": "Часто", "domains": {"D_VARIETY": 4}},
+        {"id": "5", "label": "Очень часто", "domains": {"D_VARIETY": 5}}
+      ]
+    },
+    {
+      "id": "q38",
+      "block": 3,
+      "text": "Что делает свидание запоминающимся?",
+      "scale": "single",
+      "options": [
+        {"id": "a", "label": "Дорогие и престижные места", "domains": {"D_LUXURY": 5}},
+        {"id": "b", "label": "Уютная домашняя атмосфера", "domains": {"D_HOMEY": 5}},
+        {"id": "c", "label": "Активные развлечения", "domains": {"D_ACTIVE": 5}},
+        {"id": "d", "label": "Романтические моменты", "domains": {"D_ROMANTIC": 5}},
+        {"id": "e", "label": "Необычные впечатления", "domains": {"D_ADVENTURE": 5}}
+      ]
+    },
+    {
+      "id": "q39",
+      "block": 4,
+      "text": "Как ты проявляешь заботу о партнёре?",
+      "scale": "single",
+      "options": [
+        {"id": "a", "label": "Говорю слова поддержки", "domains": {"C_WORDS": 5}},
+        {"id": "b", "label": "Провожу время рядом", "domains": {"C_TIME": 5}},
+        {"id": "c", "label": "Делаю приятные сюрпризы", "domains": {"C_GIFTS": 5}},
+        {"id": "d", "label": "Помогаю в делах", "domains": {"C_SERVICE": 5}},
+        {"id": "e", "label": "Показываю нежность", "domains": {"C_TOUCH": 5}}
+      ]
+    },
+    {
+      "id": "q40",
+      "block": 4,
+      "text": "Как часто ты делаешь что-то приятное для партнёра?",
+      "scale": "likert",
+      "options": [
+        {"id": "1", "label": "Никогда", "domains": {"C_FREQUENCY": 1}},
+        {"id": "2", "label": "Редко", "domains": {"C_FREQUENCY": 2}},
+        {"id": "3", "label": "Иногда", "domains": {"C_FREQUENCY": 3}},
+        {"id": "4", "label": "Часто", "domains": {"C_FREQUENCY": 4}},
+        {"id": "5", "label": "Очень часто", "domains": {"C_FREQUENCY": 5}}
+      ]
+    },
+    {
+      "id": "q41",
+      "block": 4,
+      "text": "Что для тебя означает 'заботиться о партнёре'?",
+      "scale": "single",
+      "options": [
+        {"id": "a", "label": "Говорить ободряющие слова", "domains": {"C_WORDS": 5}},
+        {"id": "b", "label": "Быть рядом и слушать", "domains": {"C_TIME": 5}},
+        {"id": "c", "label": "Делать приятные сюрпризы", "domains": {"C_GIFTS": 5}},
+        {"id": "d", "label": "Помогать в повседневных делах", "domains": {"C_SERVICE": 5}},
+        {"id": "e", "label": "Показывать физическую нежность", "domains": {"C_TOUCH": 5}}
+      ]
+    },
+    {
+      "id": "q42",
+      "block": 4,
+      "text": "Как ты утешаешь партнёра, когда ему плохо?",
+      "scale": "single",
+      "options": [
+        {"id": "a", "label": "Говорю успокаивающие слова", "domains": {"C_WORDS": 5}},
+        {"id": "b", "label": "Провожу время рядом", "domains": {"C_TIME": 5}},
+        {"id": "c", "label": "Делаю приятный сюрприз", "domains": {"C_GIFTS": 5}},
+        {"id": "d", "label": "Помогаю решить проблему", "domains": {"C_SERVICE": 5}},
+        {"id": "e", "label": "Обнимаю и держу за руку", "domains": {"C_TOUCH": 5}}
+      ]
+    },
+    {
+      "id": "q43",
+      "block": 4,
+      "text": "Как часто ты планируешь что-то особенное для партнёра?",
+      "scale": "likert",
+      "options": [
+        {"id": "1", "label": "Никогда", "domains": {"C_PLANNING": 1}},
+        {"id": "2", "label": "Редко", "domains": {"C_PLANNING": 2}},
+        {"id": "3", "label": "Иногда", "domains": {"C_PLANNING": 3}},
+        {"id": "4", "label": "Часто", "domains": {"C_PLANNING": 4}},
+        {"id": "5", "label": "Очень часто", "domains": {"C_PLANNING": 5}}
+      ]
+    },
+    {
+      "id": "q44",
+      "block": 4,
+      "text": "Что ты делаешь, чтобы показать свою любовь?",
+      "scale": "single",
+      "options": [
+        {"id": "a", "label": "Говорю о своих чувствах", "domains": {"C_WORDS": 5}},
+        {"id": "b", "label": "Провожу время вместе", "domains": {"C_TIME": 5}},
+        {"id": "c", "label": "Делаю сюрпризы", "domains": {"C_GIFTS": 5}},
+        {"id": "d", "label": "Помогаю в делах", "domains": {"C_SERVICE": 5}},
+        {"id": "e", "label": "Показываю нежность", "domains": {"C_TOUCH": 5}}
+      ]
+    },
+    {
+      "id": "q45",
+      "block": 4,
+      "text": "Как ты отмечаешь успехи партнёра?",
+      "scale": "single",
+      "options": [
+        {"id": "a", "label": "Говорю слова гордости", "domains": {"C_WORDS": 5}},
+        {"id": "b", "label": "Провожу время, празднуя", "domains": {"C_TIME": 5}},
+        {"id": "c", "label": "Дарю подарок", "domains": {"C_GIFTS": 5}},
+        {"id": "d", "label": "Помогаю организовать праздник", "domains": {"C_SERVICE": 5}},
+        {"id": "e", "label": "Обнимаю и поздравляю", "domains": {"C_TOUCH": 5}}
+      ]
+    },
+    {
+      "id": "q46",
+      "block": 4,
+      "text": "Как часто ты делаешь комплименты партнёру?",
+      "scale": "likert",
+      "options": [
+        {"id": "1", "label": "Никогда", "domains": {"C_COMPLIMENTS": 1}},
+        {"id": "2", "label": "Редко", "domains": {"C_COMPLIMENTS": 2}},
+        {"id": "3", "label": "Иногда", "domains": {"C_COMPLIMENTS": 3}},
+        {"id": "4", "label": "Часто", "domains": {"C_COMPLIMENTS": 4}},
+        {"id": "5", "label": "Очень часто", "domains": {"C_COMPLIMENTS": 5}}
+      ]
+    },
+    {
+      "id": "q47",
+      "block": 4,
+      "text": "Что ты делаешь, когда партнёр устал?",
+      "scale": "single",
+      "options": [
+        {"id": "a", "label": "Говорю слова поддержки", "domains": {"C_WORDS": 5}},
+        {"id": "b", "label": "Провожу время рядом", "domains": {"C_TIME": 5}},
+        {"id": "c", "label": "Делаю приятный сюрприз", "domains": {"C_GIFTS": 5}},
+        {"id": "d", "label": "Помогаю с делами", "domains": {"C_SERVICE": 5}},
+        {"id": "e", "label": "Делаю массаж или обнимаю", "domains": {"C_TOUCH": 5}}
+      ]
+    },
+    {
+      "id": "q48",
+      "block": 4,
+      "text": "Как ты проявляешь внимание к партнёру?",
+      "scale": "single",
+      "options": [
+        {"id": "a", "label": "Говорю персональные слова", "domains": {"C_WORDS": 5}},
+        {"id": "b", "label": "Уделяю время только ему", "domains": {"C_TIME": 5}},
+        {"id": "c", "label": "Делаю персональные сюрпризы", "domains": {"C_GIFTS": 5}},
+        {"id": "d", "label": "Помогаю в его делах", "domains": {"C_SERVICE": 5}},
+        {"id": "e", "label": "Показываю физическое внимание", "domains": {"C_TOUCH": 5}}
+      ]
+    },
+    {
+      "id": "q49",
+      "block": 4,
+      "text": "Как часто ты думаешь о том, как порадовать партнёра?",
+      "scale": "likert",
+      "options": [
+        {"id": "1", "label": "Никогда", "domains": {"C_THOUGHTFULNESS": 1}},
+        {"id": "2", "label": "Редко", "domains": {"C_THOUGHTFULNESS": 2}},
+        {"id": "3", "label": "Иногда", "domains": {"C_THOUGHTFULNESS": 3}},
+        {"id": "4", "label": "Часто", "domains": {"C_THOUGHTFULNESS": 4}},
+        {"id": "5", "label": "Очень часто", "domains": {"C_THOUGHTFULNESS": 5}}
+      ]
+    },
+    {
+      "id": "q50",
+      "block": 4,
+      "text": "Что для тебя важнее в проявлении заботы?",
+      "scale": "single",
+      "options": [
+        {"id": "a", "label": "Слова поддержки и понимания", "domains": {"C_WORDS": 5}},
+        {"id": "b", "label": "Качественное время вместе", "domains": {"C_TIME": 5}},
+        {"id": "c", "label": "Приятные сюрпризы", "domains": {"C_GIFTS": 5}},
+        {"id": "d", "label": "Практическая помощь", "domains": {"C_SERVICE": 5}},
+        {"id": "e", "label": "Физическая нежность", "domains": {"C_TOUCH": 5}}
+      ]
+    }
+  ],
+  "scoring": {
+    "type": "weighted-domains"
+  },
+  "resultRules": []
+}

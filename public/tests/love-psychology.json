@@ -1,0 +1,653 @@
+{
+  "meta": {
+    "id": "love-psychology-001",
+    "slug": "love-psychology",
+    "title": "Психология Любви",
+    "subtitle": "Узнай свой тип привязанности, ценности в отношениях, язык любви и стиль решения конфликтов",
+    "category": "relationships",
+    "tags": ["для пары", "язык любви", "ценности", "привязанность"],
+    "estMinutes": 7,
+    "questionsCount": 50,
+    "isPseudo": true,
+    "languages": ["ru", "kz"],
+    "rating": 4.8
+  },
+  "questions": [
+    {
+      "id": "q1",
+      "block": 1,
+      "text": "Когда мне важен человек, я легко показываю чувства.",
+      "scale": "likert",
+      "options": [
+        {"id": "1", "label": "Совсем не про меня", "domains": {"A_SECURE": 1}},
+        {"id": "2", "label": "Скорее нет", "domains": {"A_SECURE": 2}},
+        {"id": "3", "label": "Иногда", "domains": {"A_SECURE": 3}},
+        {"id": "4", "label": "Скорее да", "domains": {"A_SECURE": 4}},
+        {"id": "5", "label": "Точно про меня", "domains": {"A_SECURE": 5}}
+      ]
+    },
+    {
+      "id": "q2",
+      "block": 1,
+      "text": "Если партнёр долго не отвечает, я начинаю тревожиться.",
+      "scale": "likert",
+      "options": [
+        {"id": "1", "label": "Никогда", "domains": {"A_ANXIOUS": 1}},
+        {"id": "2", "label": "Редко", "domains": {"A_ANXIOUS": 2}},
+        {"id": "3", "label": "Иногда", "domains": {"A_ANXIOUS": 3}},
+        {"id": "4", "label": "Часто", "domains": {"A_ANXIOUS": 4}},
+        {"id": "5", "label": "Почти всегда", "domains": {"A_ANXIOUS": 5}}
+      ]
+    },
+    {
+      "id": "q3",
+      "block": 1,
+      "text": "Мне нужно личное пространство, даже в близких отношениях.",
+      "scale": "likert",
+      "options": [
+        {"id": "1", "label": "Совсем не про меня", "domains": {"A_AVOIDANT": 1}},
+        {"id": "2", "label": "Скорее нет", "domains": {"A_AVOIDANT": 2}},
+        {"id": "3", "label": "Иногда", "domains": {"A_AVOIDANT": 3}},
+        {"id": "4", "label": "Скорее да", "domains": {"A_AVOIDANT": 4}},
+        {"id": "5", "label": "Точно про меня", "domains": {"A_AVOIDANT": 5}}
+      ]
+    },
+    {
+      "id": "q4",
+      "block": 1,
+      "text": "Я доверяю партнёру и не проверяю его сообщения.",
+      "scale": "likert",
+      "options": [
+        {"id": "1", "label": "Совсем не про меня", "domains": {"A_SECURE": 1}},
+        {"id": "2", "label": "Скорее нет", "domains": {"A_SECURE": 2}},
+        {"id": "3", "label": "Иногда", "domains": {"A_SECURE": 3}},
+        {"id": "4", "label": "Скорее да", "domains": {"A_SECURE": 4}},
+        {"id": "5", "label": "Точно про меня", "domains": {"A_SECURE": 5}}
+      ]
+    },
+    {
+      "id": "q5",
+      "block": 1,
+      "text": "Боюсь, что партнёр может меня бросить.",
+      "scale": "likert",
+      "options": [
+        {"id": "1", "label": "Никогда", "domains": {"A_ANXIOUS": 1}},
+        {"id": "2", "label": "Редко", "domains": {"A_ANXIOUS": 2}},
+        {"id": "3", "label": "Иногда", "domains": {"A_ANXIOUS": 3}},
+        {"id": "4", "label": "Часто", "domains": {"A_ANXIOUS": 4}},
+        {"id": "5", "label": "Почти всегда", "domains": {"A_ANXIOUS": 5}}
+      ]
+    },
+    {
+      "id": "q6",
+      "block": 1,
+      "text": "Предпочитаю не показывать уязвимость в отношениях.",
+      "scale": "likert",
+      "options": [
+        {"id": "1", "label": "Совсем не про меня", "domains": {"A_AVOIDANT": 1}},
+        {"id": "2", "label": "Скорее нет", "domains": {"A_AVOIDANT": 2}},
+        {"id": "3", "label": "Иногда", "domains": {"A_AVOIDANT": 3}},
+        {"id": "4", "label": "Скорее да", "domains": {"A_AVOIDANT": 4}},
+        {"id": "5", "label": "Точно про меня", "domains": {"A_AVOIDANT": 5}}
+      ]
+    },
+    {
+      "id": "q7",
+      "block": 1,
+      "text": "Легко прошу о помощи у близких людей.",
+      "scale": "likert",
+      "options": [
+        {"id": "1", "label": "Совсем не про меня", "domains": {"A_SECURE": 1}},
+        {"id": "2", "label": "Скорее нет", "domains": {"A_SECURE": 2}},
+        {"id": "3", "label": "Иногда", "domains": {"A_SECURE": 3}},
+        {"id": "4", "label": "Скорее да", "domains": {"A_SECURE": 4}},
+        {"id": "5", "label": "Точно про меня", "domains": {"A_SECURE": 5}}
+      ]
+    },
+    {
+      "id": "q8",
+      "block": 1,
+      "text": "Нуждаюсь в постоянном подтверждении любви от партнёра.",
+      "scale": "likert",
+      "options": [
+        {"id": "1", "label": "Никогда", "domains": {"A_ANXIOUS": 1}},
+        {"id": "2", "label": "Редко", "domains": {"A_ANXIOUS": 2}},
+        {"id": "3", "label": "Иногда", "domains": {"A_ANXIOUS": 3}},
+        {"id": "4", "label": "Часто", "domains": {"A_ANXIOUS": 4}},
+        {"id": "5", "label": "Почти всегда", "domains": {"A_ANXIOUS": 5}}
+      ]
+    },
+    {
+      "id": "q9",
+      "block": 1,
+      "text": "Чувствую себя некомфортно, когда отношения становятся слишком близкими.",
+      "scale": "likert",
+      "options": [
+        {"id": "1", "label": "Совсем не про меня", "domains": {"A_AVOIDANT": 1}},
+        {"id": "2", "label": "Скорее нет", "domains": {"A_AVOIDANT": 2}},
+        {"id": "3", "label": "Иногда", "domains": {"A_AVOIDANT": 3}},
+        {"id": "4", "label": "Скорее да", "domains": {"A_AVOIDANT": 4}},
+        {"id": "5", "label": "Точно про меня", "domains": {"A_AVOIDANT": 5}}
+      ]
+    },
+    {
+      "id": "q10",
+      "block": 1,
+      "text": "Могу быть собой рядом с партнёром.",
+      "scale": "likert",
+      "options": [
+        {"id": "1", "label": "Совсем не про меня", "domains": {"A_SECURE": 1}},
+        {"id": "2", "label": "Скорее нет", "domains": {"A_SECURE": 2}},
+        {"id": "3", "label": "Иногда", "domains": {"A_SECURE": 3}},
+        {"id": "4", "label": "Скорее да", "domains": {"A_SECURE": 4}},
+        {"id": "5", "label": "Точно про меня", "domains": {"A_SECURE": 5}}
+      ]
+    },
+    {
+      "id": "q11",
+      "block": 2,
+      "text": "Без чего отношения теряют смысл?",
+      "scale": "single",
+      "options": [
+        {"id": "1", "label": "Поддержки и понимания", "domains": {"V_SUPPORT": 5}},
+        {"id": "2", "label": "Страсти и романтики", "domains": {"V_PASSION": 5}},
+        {"id": "3", "label": "Безопасности и стабильности", "domains": {"V_SECURITY": 5}},
+        {"id": "4", "label": "Личного роста и развития", "domains": {"V_GROWTH": 5}}
+      ]
+    },
+    {
+      "id": "q12",
+      "block": 2,
+      "text": "Что важнее всего в долгосрочных отношениях?",
+      "scale": "single",
+      "options": [
+        {"id": "1", "label": "Взаимная поддержка", "domains": {"V_SUPPORT": 5}},
+        {"id": "2", "label": "Сохранение страсти", "domains": {"V_PASSION": 5}},
+        {"id": "3", "label": "Надёжность", "domains": {"V_SECURITY": 5}},
+        {"id": "4", "label": "Совместное развитие", "domains": {"V_GROWTH": 5}}
+      ]
+    },
+    {
+      "id": "q13",
+      "block": 2,
+      "text": "Какой аспект отношений для вас приоритетен?",
+      "scale": "single",
+      "options": [
+        {"id": "1", "label": "Эмоциональная близость", "domains": {"V_SUPPORT": 5}},
+        {"id": "2", "label": "Физическая химия", "domains": {"V_PASSION": 5}},
+        {"id": "3", "label": "Финансовая стабильность", "domains": {"V_SECURITY": 5}},
+        {"id": "4", "label": "Интеллектуальное единство", "domains": {"V_GROWTH": 5}}
+      ]
+    },
+    {
+      "id": "q14",
+      "block": 2,
+      "text": "Что делает отношения по-настоящему крепкими?",
+      "scale": "single",
+      "options": [
+        {"id": "1", "label": "Быть опорой друг для друга", "domains": {"V_SUPPORT": 5}},
+        {"id": "2", "label": "Сохранять искру", "domains": {"V_PASSION": 5}},
+        {"id": "3", "label": "Соблюдать границы", "domains": {"V_SECURITY": 5}},
+        {"id": "4", "label": "Стремиться к общим целям", "domains": {"V_GROWTH": 5}}
+      ]
+    },
+    {
+      "id": "q15",
+      "block": 2,
+      "text": "В чём вы видите главную ценность партнёрства?",
+      "scale": "single",
+      "options": [
+        {"id": "1", "label": "Быть понятым и принятым", "domains": {"V_SUPPORT": 5}},
+        {"id": "2", "label": "Переживать эмоции", "domains": {"V_PASSION": 5}},
+        {"id": "3", "label": "Создавать уют и надёжность", "domains": {"V_SECURITY": 5}},
+        {"id": "4", "label": "Расти вместе", "domains": {"V_GROWTH": 5}}
+      ]
+    },
+    {
+      "id": "q16",
+      "block": 2,
+      "text": "Что больше всего мотивирует вас в отношениях?",
+      "scale": "single",
+      "options": [
+        {"id": "1", "label": "Забота о партнёре", "domains": {"V_SUPPORT": 5}},
+        {"id": "2", "label": "Романтические переживания", "domains": {"V_PASSION": 5}},
+        {"id": "3", "label": "Стабильность", "domains": {"V_SECURITY": 5}},
+        {"id": "4", "label": "Возможность развиваться", "domains": {"V_GROWTH": 5}}
+      ]
+    },
+    {
+      "id": "q17",
+      "block": 2,
+      "text": "Какой тип отношений вы считаете идеальным?",
+      "scale": "single",
+      "options": [
+        {"id": "1", "label": "Где партнёры поддерживают друг друга", "domains": {"V_SUPPORT": 5}},
+        {"id": "2", "label": "Где есть страсть и романтика", "domains": {"V_PASSION": 5}},
+        {"id": "3", "label": "Где есть чёткие границы", "domains": {"V_SECURITY": 5}},
+        {"id": "4", "label": "Где есть развитие и свобода", "domains": {"V_GROWTH": 5}}
+      ]
+    },
+    {
+      "id": "q18",
+      "block": 2,
+      "text": "Что важнее в конфликтных ситуациях?",
+      "scale": "single",
+      "options": [
+        {"id": "1", "label": "Понимание чувств партнёра", "domains": {"V_SUPPORT": 5}},
+        {"id": "2", "label": "Сохранение эмоциональной связи", "domains": {"V_PASSION": 5}},
+        {"id": "3", "label": "Определение границ", "domains": {"V_SECURITY": 5}},
+        {"id": "4", "label": "Извлечение урока", "domains": {"V_GROWTH": 5}}
+      ]
+    },
+    {
+      "id": "q19",
+      "block": 2,
+      "text": "Что делает вас счастливым в отношениях?",
+      "scale": "single",
+      "options": [
+        {"id": "1", "label": "Поддержка", "domains": {"V_SUPPORT": 5}},
+        {"id": "2", "label": "Страсть", "domains": {"V_PASSION": 5}},
+        {"id": "3", "label": "Защищённость", "domains": {"V_SECURITY": 5}},
+        {"id": "4", "label": "Развитие", "domains": {"V_GROWTH": 5}}
+      ]
+    },
+    {
+      "id": "q20",
+      "block": 2,
+      "text": "Что больше всего даёт ощущение любви?",
+      "scale": "single",
+      "options": [
+        {"id": "1", "label": "Тёплые слова", "domains": {"L_WORDS": 5}},
+        {"id": "2", "label": "Совместное время", "domains": {"L_TIME": 5}},
+        {"id": "3", "label": "Подарки и внимание", "domains": {"L_GIFTS": 5}},
+        {"id": "4", "label": "Помощь и забота", "domains": {"L_SERVICE": 5}},
+        {"id": "5", "label": "Прикосновения", "domains": {"L_TOUCH": 5}}
+      ]
+    },
+    {
+      "id": "q21",
+      "block": 3,
+      "text": "Как вы предпочитаете получать поддержку?",
+      "scale": "single",
+      "options": [
+        {"id": "1", "label": "Ободряющие слова", "domains": {"L_WORDS": 5}},
+        {"id": "2", "label": "Совместное время", "domains": {"L_TIME": 5}},
+        {"id": "3", "label": "Маленькие сюрпризы", "domains": {"L_GIFTS": 5}},
+        {"id": "4", "label": "Практическая помощь", "domains": {"L_SERVICE": 5}},
+        {"id": "5", "label": "Объятия", "domains": {"L_TOUCH": 5}}
+      ]
+    },
+    {
+      "id": "q22",
+      "block": 3,
+      "text": "Что заставляет вас чувствовать себя особенным?",
+      "scale": "single",
+      "options": [
+        {"id": "1", "label": "Комплименты", "domains": {"L_WORDS": 5}},
+        {"id": "2", "label": "Внимание без отвлечений", "domains": {"L_TIME": 5}},
+        {"id": "3", "label": "Подарки", "domains": {"L_GIFTS": 5}},
+        {"id": "4", "label": "Помощь в делах", "domains": {"L_SERVICE": 5}},
+        {"id": "5", "label": "Нежные прикосновения", "domains": {"L_TOUCH": 5}}
+      ]
+    },
+    {
+      "id": "q23",
+      "block": 3,
+      "text": "Как вы выражаете любовь к партнёру?",
+      "scale": "single",
+      "options": [
+        {"id": "1", "label": "Говорю о чувствах", "domains": {"L_WORDS": 5}},
+        {"id": "2", "label": "Провожу время", "domains": {"L_TIME": 5}},
+        {"id": "3", "label": "Дарю подарки", "domains": {"L_GIFTS": 5}},
+        {"id": "4", "label": "Помогаю", "domains": {"L_SERVICE": 5}},
+        {"id": "5", "label": "Обнимаю", "domains": {"L_TOUCH": 5}}
+      ]
+    },
+    {
+      "id": "q24",
+      "block": 3,
+      "text": "Что для вас важнее всего в проявлении заботы?",
+      "scale": "single",
+      "options": [
+        {"id": "1", "label": "Слова", "domains": {"L_WORDS": 5}},
+        {"id": "2", "label": "Время", "domains": {"L_TIME": 5}},
+        {"id": "3", "label": "Подарки", "domains": {"L_GIFTS": 5}},
+        {"id": "4", "label": "Помощь", "domains": {"L_SERVICE": 5}},
+        {"id": "5", "label": "Прикосновения", "domains": {"L_TOUCH": 5}}
+      ]
+    },
+    {
+      "id": "q25",
+      "block": 3,
+      "text": "Как вы предпочитаете отмечать важные моменты?",
+      "scale": "single",
+      "options": [
+        {"id": "1", "label": "Торжественными словами", "domains": {"L_WORDS": 5}},
+        {"id": "2", "label": "Временем вместе", "domains": {"L_TIME": 5}},
+        {"id": "3", "label": "Подарками", "domains": {"L_GIFTS": 5}},
+        {"id": "4", "label": "Помощью в организации", "domains": {"L_SERVICE": 5}},
+        {"id": "5", "label": "Прикосновениями", "domains": {"L_TOUCH": 5}}
+      ]
+    },
+    {
+      "id": "q26",
+      "block": 3,
+      "text": "Что заставляет вас чувствовать себя любимым?",
+      "scale": "single",
+      "options": [
+        {"id": "1", "label": "Когда говорят «я люблю тебя»", "domains": {"L_WORDS": 5}},
+        {"id": "2", "label": "Когда уделяют время", "domains": {"L_TIME": 5}},
+        {"id": "3", "label": "Когда дарят", "domains": {"L_GIFTS": 5}},
+        {"id": "4", "label": "Когда помогают", "domains": {"L_SERVICE": 5}},
+        {"id": "5", "label": "Когда обнимают", "domains": {"L_TOUCH": 5}}
+      ]
+    },
+    {
+      "id": "q27",
+      "block": 3,
+      "text": "Как вы утешаете расстроенного партнёра?",
+      "scale": "single",
+      "options": [
+        {"id": "1", "label": "Говорю тёплые слова", "domains": {"L_WORDS": 5}},
+        {"id": "2", "label": "Провожу с ним время", "domains": {"L_TIME": 5}},
+        {"id": "3", "label": "Дарю что-то приятное", "domains": {"L_GIFTS": 5}},
+        {"id": "4", "label": "Помогаю решить проблему", "domains": {"L_SERVICE": 5}},
+        {"id": "5", "label": "Обнимаю", "domains": {"L_TOUCH": 5}}
+      ]
+    },
+    {
+      "id": "q28",
+      "block": 3,
+      "text": "Что для вас важнее в романтических отношениях?",
+      "scale": "single",
+      "options": [
+        {"id": "1", "label": "Слова любви", "domains": {"L_WORDS": 5}},
+        {"id": "2", "label": "Свидания", "domains": {"L_TIME": 5}},
+        {"id": "3", "label": "Подарки", "domains": {"L_GIFTS": 5}},
+        {"id": "4", "label": "Поступки", "domains": {"L_SERVICE": 5}},
+        {"id": "5", "label": "Прикосновения", "domains": {"L_TOUCH": 5}}
+      ]
+    },
+    {
+      "id": "q29",
+      "block": 3,
+      "text": "Как вы предпочитаете получать извинения?",
+      "scale": "single",
+      "options": [
+        {"id": "1", "label": "Искренние слова", "domains": {"L_WORDS": 5}},
+        {"id": "2", "label": "Время, посвящённое вам", "domains": {"L_TIME": 5}},
+        {"id": "3", "label": "Подарок", "domains": {"L_GIFTS": 5}},
+        {"id": "4", "label": "Исправление поступками", "domains": {"L_SERVICE": 5}},
+        {"id": "5", "label": "Нежность", "domains": {"L_TOUCH": 5}}
+      ]
+    },
+    {
+      "id": "q30",
+      "block": 3,
+      "text": "Что больше всего цените в проявлении внимания?",
+      "scale": "single",
+      "options": [
+        {"id": "1", "label": "Комплименты", "domains": {"L_WORDS": 5}},
+        {"id": "2", "label": "Время без отвлечений", "domains": {"L_TIME": 5}},
+        {"id": "3", "label": "Подарки с душой", "domains": {"L_GIFTS": 5}},
+        {"id": "4", "label": "Помощь в делах", "domains": {"L_SERVICE": 5}},
+        {"id": "5", "label": "Прикосновения", "domains": {"L_TOUCH": 5}}
+      ]
+    },
+    {
+      "id": "q31",
+      "block": 4,
+      "text": "После ссоры мне нужно обсудить всё прямо сейчас.",
+      "scale": "likert",
+      "options": [
+        {"id": "1", "label": "Совсем не про меня", "domains": {"C_COLLAB": 1}},
+        {"id": "2", "label": "Скорее нет", "domains": {"C_COLLAB": 2}},
+        {"id": "3", "label": "Иногда", "domains": {"C_COLLAB": 3}},
+        {"id": "4", "label": "Скорее да", "domains": {"C_COLLAB": 4}},
+        {"id": "5", "label": "Точно про меня", "domains": {"C_COLLAB": 5}}
+      ]
+    },
+    {
+      "id": "q32",
+      "block": 4,
+      "text": "Я предпочитаю паузу, прежде чем говорить о проблеме.",
+      "scale": "likert",
+      "options": [
+        {"id": "1", "label": "Совсем не про меня", "domains": {"C_AVOID": 1}},
+        {"id": "2", "label": "Скорее нет", "domains": {"C_AVOID": 2}},
+        {"id": "3", "label": "Иногда", "domains": {"C_AVOID": 3}},
+        {"id": "4", "label": "Скорее да", "domains": {"C_AVOID": 4}},
+        {"id": "5", "label": "Точно про меня", "domains": {"C_AVOID": 5}}
+      ]
+    },
+    {
+      "id": "q33",
+      "block": 4,
+      "text": "В конфликте я ищу компромиссное решение.",
+      "scale": "likert",
+      "options": [
+        {"id": "1", "label": "Совсем не про меня", "domains": {"C_COMPROM": 1}},
+        {"id": "2", "label": "Скорее нет", "domains": {"C_COMPROM": 2}},
+        {"id": "3", "label": "Иногда", "domains": {"C_COMPROM": 3}},
+        {"id": "4", "label": "Скорее да", "domains": {"C_COMPROM": 4}},
+        {"id": "5", "label": "Точно про меня", "domains": {"C_COMPROM": 5}}
+      ]
+    },
+    {
+      "id": "q34",
+      "block": 4,
+      "text": "Я готов уступить, чтобы сохранить мир.",
+      "scale": "likert",
+      "options": [
+        {"id": "1", "label": "Совсем не про меня", "domains": {"C_ACCOM": 1}},
+        {"id": "2", "label": "Скорее нет", "domains": {"C_ACCOM": 2}},
+        {"id": "3", "label": "Иногда", "domains": {"C_ACCOM": 3}},
+        {"id": "4", "label": "Скорее да", "domains": {"C_ACCOM": 4}},
+        {"id": "5", "label": "Точно про меня", "domains": {"C_ACCOM": 5}}
+      ]
+    },
+    {
+      "id": "q35",
+      "block": 4,
+      "text": "В споре я настаиваю на своей точке зрения.",
+      "scale": "likert",
+      "options": [
+        {"id": "1", "label": "Совсем не про меня", "domains": {"C_COMPETE": 1}},
+        {"id": "2", "label": "Скорее нет", "domains": {"C_COMPETE": 2}},
+        {"id": "3", "label": "Иногда", "domains": {"C_COMPETE": 3}},
+        {"id": "4", "label": "Скорее да", "domains": {"C_COMPETE": 4}},
+        {"id": "5", "label": "Точно про меня", "domains": {"C_COMPETE": 5}}
+      ]
+    },
+    {
+      "id": "q36",
+      "block": 4,
+      "text": "Я избегаю конфликтных ситуаций.",
+      "scale": "likert",
+      "options": [
+        {"id": "1", "label": "Совсем не про меня", "domains": {"C_AVOID": 1}},
+        {"id": "2", "label": "Скорее нет", "domains": {"C_AVOID": 2}},
+        {"id": "3", "label": "Иногда", "domains": {"C_AVOID": 3}},
+        {"id": "4", "label": "Скорее да", "domains": {"C_AVOID": 4}},
+        {"id": "5", "label": "Точно про меня", "domains": {"C_AVOID": 5}}
+      ]
+    },
+    {
+      "id": "q37",
+      "block": 4,
+      "text": "Я стремлюсь найти решение, которое устроит всех.",
+      "scale": "likert",
+      "options": [
+        {"id": "1", "label": "Совсем не про меня", "domains": {"C_COLLAB": 1}},
+        {"id": "2", "label": "Скорее нет", "domains": {"C_COLLAB": 2}},
+        {"id": "3", "label": "Иногда", "domains": {"C_COLLAB": 3}},
+        {"id": "4", "label": "Скорее да", "domains": {"C_COLLAB": 4}},
+        {"id": "5", "label": "Точно про меня", "domains": {"C_COLLAB": 5}}
+      ]
+    },
+    {
+      "id": "q38",
+      "block": 4,
+      "text": "В конфликте я готов идти на уступки.",
+      "scale": "likert",
+      "options": [
+        {"id": "1", "label": "Совсем не про меня", "domains": {"C_ACCOM": 1}},
+        {"id": "2", "label": "Скорее нет", "domains": {"C_ACCOM": 2}},
+        {"id": "3", "label": "Иногда", "domains": {"C_ACCOM": 3}},
+        {"id": "4", "label": "Скорее да", "domains": {"C_ACCOM": 4}},
+        {"id": "5", "label": "Точно про меня", "domains": {"C_ACCOM": 5}}
+      ]
+    },
+    {
+      "id": "q39",
+      "block": 4,
+      "text": "В конфликте я ищу золотую середину.",
+      "scale": "likert",
+      "options": [
+        {"id": "1", "label": "Совсем не про меня", "domains": {"C_COMPROM": 1}},
+        {"id": "2", "label": "Скорее нет", "domains": {"C_COMPROM": 2}},
+        {"id": "3", "label": "Иногда", "domains": {"C_COMPROM": 3}},
+        {"id": "4", "label": "Скорее да", "domains": {"C_COMPROM": 4}},
+        {"id": "5", "label": "Точно про меня", "domains": {"C_COMPROM": 5}}
+      ]
+    },
+    {
+      "id": "q40",
+      "block": 4,
+      "text": "Я предпочитаю отложить сложный разговор на потом.",
+      "scale": "likert",
+      "options": [
+        {"id": "1", "label": "Совсем не про меня", "domains": {"C_AVOID": 1}},
+        {"id": "2", "label": "Скорее нет", "domains": {"C_AVOID": 2}},
+        {"id": "3", "label": "Иногда", "domains": {"C_AVOID": 3}},
+        {"id": "4", "label": "Скорее да", "domains": {"C_AVOID": 4}},
+        {"id": "5", "label": "Точно про меня", "domains": {"C_AVOID": 5}}
+      ]
+    },
+    {
+      "id": "q41",
+      "block": 5,
+      "text": "Что делает тебя по-настоящему желанной/ым в отношениях?",
+      "scale": "single",
+      "options": [
+        {"id": "1", "label": "Глубокие разговоры", "domains": {"V_SUPPORT": 5}},
+        {"id": "2", "label": "Флирт и игра", "domains": {"V_PASSION": 5}},
+        {"id": "3", "label": "Инициатива и смелость", "domains": {"V_GROWTH": 5}},
+        {"id": "4", "label": "Надёжность и уверенность", "domains": {"V_SECURITY": 5}}
+      ]
+    },
+    {
+      "id": "q42",
+      "block": 5,
+      "text": "Какой темп сближения тебе комфортен?",
+      "scale": "single",
+      "options": [
+        {"id": "1", "label": "Медленно и осознанно", "domains": {"A_SECURE": 5}},
+        {"id": "2", "label": "Как пойдёт", "domains": {"A_ANXIOUS": 5}},
+        {"id": "3", "label": "Быстро, если есть химия", "domains": {"V_PASSION": 5}},
+        {"id": "4", "label": "С паузами: близость ↔ пространство", "domains": {"A_AVOIDANT": 5}}
+      ]
+    },
+    {
+      "id": "q43",
+      "block": 5,
+      "text": "Как ты любишь, чтобы проявляли желание к тебе?",
+      "scale": "single",
+      "options": [
+        {"id": "1", "label": "Через слова", "domains": {"L_WORDS": 5}},
+        {"id": "2", "label": "Через действия", "domains": {"L_SERVICE": 5}},
+        {"id": "3", "label": "Через время вместе", "domains": {"L_TIME": 5}},
+        {"id": "4", "label": "Через прикосновения", "domains": {"L_TOUCH": 5}}
+      ]
+    },
+    {
+      "id": "q44",
+      "block": 5,
+      "text": "Что сильнее всего разжигает твоё влечение?",
+      "scale": "single",
+      "options": [
+        {"id": "1", "label": "Ум и юмор", "domains": {"V_GROWTH": 5}},
+        {"id": "2", "label": "Уверенность", "domains": {"A_SECURE": 5}},
+        {"id": "3", "label": "Забота", "domains": {"V_SUPPORT": 5}},
+        {"id": "4", "label": "Химия и спонтанность", "domains": {"V_PASSION": 5}}
+      ]
+    },
+    {
+      "id": "q45",
+      "block": 5,
+      "text": "Что из этого — твоя «зелёная кнопка» внимания?",
+      "scale": "single",
+      "options": [
+        {"id": "1", "label": "Инициатива", "domains": {"V_GROWTH": 5}},
+        {"id": "2", "label": "Глубокие вопросы", "domains": {"V_SUPPORT": 5}},
+        {"id": "3", "label": "Маленькие, но точные жесты", "domains": {"L_GIFTS": 5}},
+        {"id": "4", "label": "Помощь", "domains": {"L_SERVICE": 5}}
+      ]
+    },
+    {
+      "id": "q46",
+      "block": 5,
+      "text": "Какие границы для тебя важны на старте близости?",
+      "scale": "single",
+      "options": [
+        {"id": "1", "label": "Темп — по моему комфорту", "domains": {"A_SECURE": 5}},
+        {"id": "2", "label": "Прозрачность намерений", "domains": {"V_SECURITY": 5}},
+        {"id": "3", "label": "Личное пространство", "domains": {"A_AVOIDANT": 5}},
+        {"id": "4", "label": "Обсуждение ожиданий", "domains": {"V_GROWTH": 5}}
+      ]
+    },
+    {
+      "id": "q47",
+      "block": 5,
+      "text": "Что тебя быстрее всего «выключает» в симпатии?",
+      "scale": "single",
+      "options": [
+        {"id": "1", "label": "Давление и неуважение", "domains": {"C_COMPETE": 5}},
+        {"id": "2", "label": "Холодность", "domains": {"A_AVOIDANT": 5}},
+        {"id": "3", "label": "Ревность", "domains": {"A_ANXIOUS": 5}},
+        {"id": "4", "label": "Непоследовательность", "domains": {"V_SECURITY": 5}}
+      ]
+    },
+    {
+      "id": "q48",
+      "block": 5,
+      "text": "Готов/а ли ты открыто говорить о своих желаниях и фантазиях?",
+      "scale": "likert",
+      "options": [
+        {"id": "1", "label": "Нет", "domains": {"A_AVOIDANT": 1}},
+        {"id": "2", "label": "Скорее нет", "domains": {"A_AVOIDANT": 2}},
+        {"id": "3", "label": "Иногда", "domains": {"A_SECURE": 3}},
+        {"id": "4", "label": "Скорее да", "domains": {"A_SECURE": 4}},
+        {"id": "5", "label": "Да, люблю откровенность", "domains": {"A_SECURE": 5}}
+      ]
+    },
+    {
+      "id": "q49",
+      "block": 5,
+      "text": "Какой формат свиданий тебя сильнее всего сближает?",
+      "scale": "single",
+      "options": [
+        {"id": "1", "label": "Тихий вечер тет-а-тет", "domains": {"L_TIME": 5}},
+        {"id": "2", "label": "Совместное приключение", "domains": {"V_PASSION": 5}},
+        {"id": "3", "label": "Общее хобби", "domains": {"V_GROWTH": 5}},
+        {"id": "4", "label": "Домашний уют", "domains": {"V_SECURITY": 5}}
+      ]
+    },
+    {
+      "id": "q50",
+      "block": 5,
+      "text": "Когда ты чувствуешь максимальную близость?",
+      "scale": "single",
+      "options": [
+        {"id": "1", "label": "Когда меня слушают", "domains": {"L_WORDS": 5}},
+        {"id": "2", "label": "Когда меня выбирают", "domains": {"L_TIME": 5}},
+        {"id": "3", "label": "Когда мы создаём эмоции", "domains": {"V_PASSION": 5}},
+        {"id": "4", "label": "Когда обо мне заботятся", "domains": {"L_SERVICE": 5}}
+      ]
+    }
+  ],
+  "scoring": {
+    "type": "weighted-domains",
+    "resultRules": []
+  }
+}
