@@ -30,7 +30,7 @@ export async function getStoredTestResults(): Promise<RealTestResult[]> {
       orderBy: { completedAt: 'desc' },
     });
     
-    return results.map(result => ({
+    return results.map((result: any) => ({
       sessionId: result.sessionId,
       testId: result.testId,
       testTitle: result.testTitle,
@@ -64,7 +64,7 @@ export async function getTestResultsByTestId(testId: string): Promise<RealTestRe
       orderBy: { completedAt: 'desc' },
     });
     
-    return results.map(result => ({
+    return results.map((result: any) => ({
       sessionId: result.sessionId,
       testId: result.testId,
       testTitle: result.testTitle,
