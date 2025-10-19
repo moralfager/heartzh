@@ -1,5 +1,5 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
+// Prisma schema for Psychology Love Test
+// Milestone 1: Database and Privacy
 
 generator client {
   provider = "prisma-client-js"
@@ -10,38 +10,142 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model TestResult {
-  id           String   @id @default(cuid())
-  sessionId    String   @map("session_id")
-  testId       String   @map("test_id")
-  testTitle    String   @map("test_title")
-  completedAt  DateTime @map("completed_at") @default(now())
-  answers      Json
-  results      Json
-  createdAt    DateTime @map("created_at") @default(now())
-
-  @@map("test_results")
-  @@index([sessionId])
-  @@index([testId])
-  @@index([completedAt])
-}
+// ============================================================================
+// TESTS AND STRUCTURE
+// ============================================================================
 
 model Test {
-  id             String   @id @default(cuid())
-  slug           String   @unique
-  title          String
-  subtitle       String?
-  category       String?
-  estMinutes     Int      @map("est_minutes") @default(5)
-  questionsCount Int      @map("questions_count") @default(0)
-  isPseudo       Boolean  @map("is_pseudo") @default(false)
-  languages      String   @default("[\"ru\"]") // JSON array as string
-  questions      Json?
-  scoring        Json?
-  resultRules    Json?    @map("result_rules")
-  createdAt      DateTime @map("created_at") @default(now())
-  updatedAt      DateTime @map("updated_at") @updatedAt
-
-  @@map("tests")
+  id          String     @id @default(cuid())
+  slug        String     @unique
+  title       String     @db.VarChar(255)
+  description String?    @db.Text
+  version     Int        @default(1)
+  published   Boolean    @default(false)
+  createdAt   DateTime   @default(now()) @map("created_at")
+  updatedAt   DateTime   @updatedAt @map("updated_at")
+  
+  questions   Question[]
+  scales      Scale[]
+  rules       Rule[]
+  results     Result[]
+  
+  @@unique([slug, version])
   @@index([slug])
+  @@index([published])
+  @@map("tests")
+}
+
+model Question {
+  id       String   @id @default(cuid())
+  testId   String   @map("test_id")
+  order    Int
+  text     String   @db.Text
+  type     String   @db.VarChar(50) // single | multi | scale | likert
+  
+  test     Test           @relation(fields: [testId], references: [id], onDelete: Cascade)
+  options  AnswerOption[]
+  
+  @@index([testId, order])
+  @@map("questions")
+}
+
+model AnswerOption {
+  id         String   @id @default(cuid())
+  questionId String   @map("question_id")
+  text       String   @db.Text
+  value      Int
+  weights    Json?    // {[scaleId]: weight}
+  
+  question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  
+  @@index([questionId])
+  @@map("answer_options")
+}
+
+model Scale {
+  id      String  @id @default(cuid())
+  testId  String  @map("test_id")
+  key     String  @db.VarChar(50) // O, C, E, A, N для Big5
+  name    String  @db.VarChar(255)
+  min     Int
+  max     Int
+  bands   Json?   // [{to: number, label: string}]
+  
+  test    Test    @relation(fields: [testId], references: [id], onDelete: Cascade)
+  
+  @@unique([testId, key])
+  @@index([testId])
+  @@map("scales")
+}
+
+model Rule {
+  id      String  @id @default(cuid())
+  testId  String  @map("test_id")
+  kind    String  @db.VarChar(50) // threshold | combo | formula
+  payload Json    // DSL правил
+  
+  test    Test    @relation(fields: [testId], references: [id], onDelete: Cascade)
+  
+  @@index([testId])
+  @@map("rules")
+}
+
+// ============================================================================
+// SESSIONS AND RESULTS (Privacy-focused, TTL 24h)
+// ============================================================================
+
+model Session {
+  id        String   @id @default(cuid()) // sessionId из cookie
+  createdAt DateTime @default(now()) @map("created_at")
+  expiresAt DateTime @map("expires_at")
+  
+  results   Result[]
+  
+  @@index([expiresAt])
+  @@map("sessions")
+}
+
+model Result {
+  id        String   @id @default(cuid())
+  testId    String   @map("test_id")
+  sessionId String   @map("session_id")
+  version   Int      // версия теста на момент прохождения
+  summary   Json     // агрегаты по шкалам, финальные ярлыки
+  createdAt DateTime @default(now()) @map("created_at")
+  
+  session   Session       @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  test      Test          @relation(fields: [testId], references: [id])
+  detail    ResultDetail?
+  
+  @@index([sessionId])
+  @@index([testId])
+  @@index([createdAt])
+  @@map("results")
+}
+
+model ResultDetail {
+  id       String  @id @default(cuid())
+  resultId String  @unique @map("result_id")
+  details  Json    // по-вопросные данные, аудит расчёта
+  
+  result   Result  @relation(fields: [resultId], references: [id], onDelete: Cascade)
+  
+  @@map("result_details")
+}
+
+// ============================================================================
+// IMPORT JOBS (Idempotency tracking)
+// ============================================================================
+
+model ImportJob {
+  id          String   @id @default(cuid())
+  externalId  String   @map("external_id") @db.VarChar(255)
+  contentHash String   @map("content_hash") @db.VarChar(64)
+  appliedAt   DateTime @default(now()) @map("applied_at")
+  testId      String?  @map("test_id")
+  status      String   @db.VarChar(50) // applied | skipped | failed
+  
+  @@unique([externalId, contentHash])
+  @@index([externalId])
+  @@map("import_jobs")
 }
