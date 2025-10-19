@@ -51,6 +51,17 @@ export default function ResultsPage({ params }: ResultsPageProps) {
           setResult(profile);
           
           // Сохраняем результат через новый API
+          const answersMap: Record<string, any> = {};
+          answers.forEach(answer => {
+            const question = testData.questions.find(q => q.id === answer.questionId);
+            answersMap[answer.questionId] = {
+              questionText: question?.text || '',
+              block: question?.block || 1,
+              value: answer.value,
+              timestamp: answer.timestamp
+            };
+          });
+
           fetch('/api/internal/results', {
             method: 'POST',
             headers: {
@@ -59,32 +70,21 @@ export default function ResultsPage({ params }: ResultsPageProps) {
             body: JSON.stringify({
               testId: currentSlug,
               version: 1,
+              answers: answersMap,
               summary: {
                 testTitle: testData.meta.title,
                 completedAt: new Date().toISOString(),
-                answers: answers.map(answer => {
-                  const question = testData.questions.find(q => q.id === answer.questionId);
-                  return {
-                    questionId: answer.questionId,
-                    questionText: question?.text || '',
-                    block: question?.block || 1,
-                    answer: answer.value,
-                    timestamp: answer.timestamp
-                  };
-                }),
-                results: {
-                  attachment: profile.attachment,
-                  values: profile.values,
-                  loveLanguage: profile.loveLanguage,
-                  conflict: profile.conflict,
-                  expressions: profile.expressions,
-                  gifts: profile.gifts,
-                  dates: profile.dates,
-                  care: profile.care,
-                  summaryType: profile.summaryType,
-                  summary: profile.summary,
-                  tips: profile.tips
-                }
+                attachment: profile.attachment,
+                values: profile.values,
+                loveLanguage: profile.loveLanguage,
+                conflict: profile.conflict,
+                expressions: profile.expressions,
+                gifts: profile.gifts,
+                dates: profile.dates,
+                care: profile.care,
+                summaryType: profile.summaryType,
+                summary: profile.summary,
+                tips: profile.tips
               }
             }),
           }).then(response => response.json())
