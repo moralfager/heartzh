@@ -13,62 +13,25 @@ jobs:
       - name: Checkout (optional)
         uses: actions/checkout@v4
 
-      # Либо SSH_KEY_B64 (base64)...дада
-      - name: Start ssh-agent and add key (base64)
-        if: ${{ secrets.SSH_KEY_B64 != '' }}
-        env:
-          SSH_KEY_B64: ${{ secrets.SSH_KEY_B64 }}
-        run: |
-          eval "$(ssh-agent -s)"
-          umask 077
-          echo "$SSH_KEY_B64" | base64 -d > ~/.ssh/deploy_key
-          chmod 600 ~/.ssh/deploy_key
-          ssh-add ~/.ssh/deploy_key
-
-      # ...либо обычный SSH_KEY
       - name: Add SSH key
-        if: ${{ secrets.SSH_KEY != '' }}
         uses: webfactory/ssh-agent@v0.9.0
         with:
           ssh-private-key: ${{ secrets.SSH_KEY }}
 
-      - name: Prepare known_hosts (auto)
-        env:
-          SSH_HOST: ${{ secrets.SSH_HOST }}
-          SSH_PORT: ${{ secrets.SSH_PORT }}
+      - name: Add known_hosts
         run: |
-          set -euo pipefail
-          clean() { printf %s "$1" | tr -d '\r"'\'' ' | sed -E 's~^[^@]*@~~; s~^[a-z]+://~~; s~/.*$~~'; }
-          HOST="$(clean "${SSH_HOST}")"
-          PORT="$(clean "${SSH_PORT:-22}")"
           mkdir -p ~/.ssh
-          ssh-keygen -R "[$HOST]:$PORT" 2>/dev/null || true
-          ssh-keyscan -p "$PORT" -H "$HOST" >> ~/.ssh/known_hosts 2>/dev/null
+          ssh-keyscan -p ${{ secrets.SSH_PORT || 22 }} ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
           chmod 600 ~/.ssh/known_hosts
 
       - name: Deploy over SSH
-        env:
-          SSH_HOST: ${{ secrets.SSH_HOST }}
-          SSH_PORT: ${{ secrets.SSH_PORT }}
-          SSH_USER: ${{ secrets.SSH_USER }}
         run: |
-          set -euo pipefail
-          clean() { printf %s "$1" | tr -d '\r"'\'' ' | sed -E 's~^[^@]*@~~; s~^[a-z]+://~~; s~/.*$~~'; }
-          HOST="$(clean "${SSH_HOST}")"
-          PORT="$(clean "${SSH_PORT:-22}")"
-          USER="$(clean "${SSH_USER}")"
-
-          ssh -p "$PORT" "$USER@$HOST" << 'EOF'
+          ssh -p ${{ secrets.SSH_PORT || 22 }} ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
             set -e
             cd /var/www/heartzh
             git fetch --all
-            # ВАЖНО: тянем именно origin/prod
             git reset --hard origin/prod
             git config --global --add safe.directory /var/www/heartzh
-
-            # Собрать/поднять
             docker compose -f docker-compose.prod.yml up -d --build
-
-            # Диагностика
             docker ps
           EOF
