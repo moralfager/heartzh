@@ -26,9 +26,20 @@ services:
     volumes:
       - ./nginx-docker.conf:/etc/nginx/conf.d/default.conf
       - ./ssl:/etc/nginx/ssl
+      - /etc/letsencrypt:/etc/letsencrypt
     depends_on:
       - psychotest
     restart: unless-stopped
+
+  # Certbot для SSL сертификатов
+  certbot:
+    image: certbot/certbot
+    volumes:
+      - /etc/letsencrypt:/etc/letsencrypt
+      - /var/www/certbot:/var/www/certbot
+    command: certonly --webroot --webroot-path=/var/www/certbot --email moralfager@mail.ru --agree-tos --no-eff-email -d heartofzha.ru -d www.heartofzha.ru
+    depends_on:
+      - nginx
 
   # Мониторинг с Watchtower (автообновление)
   watchtower:
