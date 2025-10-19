@@ -1,14 +1,16 @@
 #!/bin/bash
+# Скрипт для автоматического обновления SSL сертификатов
 
-# SSL Certificate Renewal Script
-# This script renews Let's Encrypt certificates and reloads Nginx
+cd /var/www/heartzh
 
-echo "Starting SSL certificate renewal..."
+# Обновление сертификатов
+docker run --rm \
+  -v heartzh_certbot-webroot:/var/www/certbot \
+  -v heartzh_letsencrypt:/etc/letsencrypt \
+  certbot/certbot renew --webroot -w /var/www/certbot \
+  --deploy-hook "docker compose -f /var/www/heartzh/docker-compose.prod.yml exec -T nginx nginx -s reload"
 
-# Renew certificates
-docker-compose -f docker-compose.prod.yml run --rm certbot renew
+# Перезагрузка Nginx для применения новых сертификатов
+docker compose -f docker-compose.prod.yml exec -T nginx nginx -s reload
 
-# Reload Nginx to use new certificates
-docker-compose -f docker-compose.prod.yml exec nginx nginx -s reload
-
-echo "SSL certificate renewal completed!"
+echo "SSL certificate renewal completed at $(date)" >> /var/log/ssl-renew.log
