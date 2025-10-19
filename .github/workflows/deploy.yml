@@ -19,7 +19,7 @@ jobs:
         with:
           ssh-private-key: ${{ secrets.SSH_KEY }}
 
-      # Если SSH_KNOWN_HOSTS передан — пишем его в known_hosts; если нет — шаг всё равно пройдёт
+      # Если SSH_KNOWN_HOSTS передан — пишем его в known_hosts; если нет — шаг всё равно пройдё
       - name: Add known_hosts (soft)
         run: |
           mkdir -p ~/.ssh
