@@ -11,6 +11,7 @@
     "test": "jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
+    "import-tests": "tsx scripts/import-tests.ts",
     "docker:build": "docker build -t psychology-love-test .",
     "docker:run": "docker run -p 3000:3000 psychology-love-test",
     "docker:up": "docker-compose up --build",
@@ -45,6 +46,7 @@
     "postcss": "^8.5.6",
     "tailwindcss": "^4.1.14",
     "ts-jest": "^29.1.0",
+    "tsx": "^4.7.0",
     "typescript": "^5"
   },
   "engines": {
