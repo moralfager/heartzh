@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout (for logs only)
+      - name: Checkout
         uses: actions/checkout@v4
 
       - name: Add SSH key
@@ -18,25 +18,42 @@ jobs:
         with:
           ssh-private-key: ${{ secrets.SSH_KEY }}
 
-      - name: Add known_hosts (optional)
-        if: ${{ secrets.SSH_KNOWN_HOSTS != '' }}
+      # Если SSH_KNOWN_HOSTS передан — пишем его в known_hosts; если нет — шаг всё равно пройдёт
+      - name: Add known_hosts (soft)
         run: |
-          echo "${{ secrets.SSH_KNOWN_HOSTS }}" >> ~/.ssh/known_hosts
-          chmod 600 ~/.ssh/known_hosts
+          mkdir -p ~/.ssh
+          if [ -n "${SSH_KNOWN_HOSTS}" ]; then
+            echo "${SSH_KNOWN_HOSTS}" >> ~/.ssh/known_hosts
+            chmod 600 ~/.ssh/known_hosts
+          fi
+        env:
+          SSH_KNOWN_HOSTS: ${{ secrets.SSH_KNOWN_HOSTS }}
 
       - name: Deploy over SSH
         env:
           SSH_HOST: ${{ secrets.SSH_HOST }}
           SSH_PORT: ${{ secrets.SSH_PORT }}
           SSH_USER: ${{ secrets.SSH_USER }}
+          SSH_KNOWN_HOSTS: ${{ secrets.SSH_KNOWN_HOSTS }}
         run: |
-          ssh -o StrictHostKeyChecking=${{ secrets.SSH_KNOWN_HOSTS == '' && 'no' || 'yes' }} \
-              -p "$SSH_PORT" "$SSH_USER@$SSH_HOST" << 'EOF'
+          # Если known_hosts не задан, отключаем строгую проверку
+          OPTS="-p ${SSH_PORT:-22}"
+          if [ -z "$SSH_KNOWN_HOSTS" ]; then
+            OPTS="$OPTS -o StrictHostKeyChecking=no"
+          fi
+
+          ssh $OPTS "$SSH_USER@$SSH_HOST" << 'EOF'
             set -e
             cd /var/www/heartzh
+
+            # Обновляем код 1:1 с origin/main
             git fetch --all
             git reset --hard origin/main
             git config --global --add safe.directory /var/www/heartzh
+
+            # Пересобираем и поднимаем
             docker compose -f docker-compose.prod.yml up -d --build
+
+            # Диагностика
             docker ps
           EOF
