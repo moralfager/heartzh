@@ -6,7 +6,6 @@ import Link from "next/link";
 import { Heart, Share2, Download, ArrowLeft, Star, TrendingUp, Users, Shield } from "lucide-react";
 import { TestDefinition, SessionAnswer, ResultProfile } from "@/lib/types";
 import { calculateScores, generateResultProfile } from "@/lib/scoring";
-import { saveTestResult } from "@/lib/dataStorage";
 
 // Mock function to get test data
 async function getTest(slug: string): Promise<TestDefinition | null> {
@@ -49,38 +48,50 @@ export default function ResultsPage({ params }: ResultsPageProps) {
           const profile = generateResultProfile(scores);
           setResult(profile);
           
-          // Сохраняем результат в админку
-          const testResult = {
-            sessionId: session,
-            testId: currentSlug,
-            testTitle: testData.meta.title,
-            completedAt: new Date().toISOString(),
-            answers: answers.map(answer => {
-              const question = testData.questions.find(q => q.id === answer.questionId);
-              return {
-                questionId: answer.questionId,
-                questionText: question?.text || '',
-                block: question?.block || 1,
-                answer: answer.value,
-                timestamp: answer.timestamp
-              };
+          // Сохраняем результат через новый API
+          fetch('/api/internal/results', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              testId: currentSlug,
+              version: 1,
+              summary: {
+                testTitle: testData.meta.title,
+                completedAt: new Date().toISOString(),
+                answers: answers.map(answer => {
+                  const question = testData.questions.find(q => q.id === answer.questionId);
+                  return {
+                    questionId: answer.questionId,
+                    questionText: question?.text || '',
+                    block: question?.block || 1,
+                    answer: answer.value,
+                    timestamp: answer.timestamp
+                  };
+                }),
+                results: {
+                  attachment: profile.attachment,
+                  values: profile.values,
+                  loveLanguage: profile.loveLanguage,
+                  conflict: profile.conflict,
+                  expressions: profile.expressions,
+                  gifts: profile.gifts,
+                  dates: profile.dates,
+                  care: profile.care,
+                  summaryType: profile.summaryType,
+                  summary: profile.summary,
+                  tips: profile.tips
+                }
+              }
             }),
-            results: {
-              attachment: profile.attachment,
-              values: profile.values,
-              loveLanguage: profile.loveLanguage,
-              conflict: profile.conflict,
-              expressions: profile.expressions,
-              gifts: profile.gifts,
-              dates: profile.dates,
-              care: profile.care,
-              summaryType: profile.summaryType,
-              summary: profile.summary,
-              tips: profile.tips
-            }
-          };
-          
-          saveTestResult(testResult);
+          }).then(response => response.json())
+            .then(data => {
+              console.log('✅ Result saved to database:', data);
+            })
+            .catch(error => {
+              console.error('❌ Error saving result:', error);
+            });
         }
       }
       
