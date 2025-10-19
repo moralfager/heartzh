@@ -51,10 +51,10 @@ export async function POST(request: NextRequest) {
 
     const { testId, version, answers, summary, details } = validation.data;
 
-    // Проверка существования теста
+    // Проверка существования теста (ищем по slug, т.к. testId на самом деле slug)
     const testExists = await prisma.test.findFirst({
       where: {
-        id: testId,
+        slug: testId, // testId на самом деле slug из URL
         published: true,
       },
     });
@@ -68,20 +68,19 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Создание результата
+    // Создание результата (используем реальный ID теста из БД)
     const result = await prisma.result.create({
       data: {
-        testId,
+        testId: testExists.id, // Используем реальный ID из БД
         sessionId: session.id,
         version,
         summary,
-        detail: details
-          ? {
-              create: {
-                details,
-              },
-            }
-          : undefined,
+        detail: {
+          create: {
+            answers,
+            details: details || {},
+          },
+        },
       },
       include: {
         detail: true,
