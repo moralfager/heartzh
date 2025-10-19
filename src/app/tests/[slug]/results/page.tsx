@@ -44,6 +44,8 @@ export default function ResultsPage({ params }: ResultsPageProps) {
         const savedAnswers = localStorage.getItem(`test-answers-${session}`);
         if (savedAnswers) {
           const answers: SessionAnswer[] = JSON.parse(savedAnswers);
+          
+          // Calculate scores first
           const scores = calculateScores(answers, testData.questions);
           const profile = generateResultProfile(scores);
           setResult(profile);
