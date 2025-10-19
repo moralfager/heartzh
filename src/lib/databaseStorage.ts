@@ -1,21 +1,30 @@
 import { prisma } from './prisma';
 import { RealTestResult } from './dataStorage';
+import { getOrCreateSession } from './session';
 
-// Функция для сохранения результатов теста в БД
+// Функция для сохранения результатов теста в БД (legacy wrapper)
+// Используется старым кодом, адаптирует к новой схеме
 export async function saveTestResult(result: RealTestResult) {
   try {
-    await prisma.testResult.create({
+    // Получаем или создаем сессию
+    const session = await getOrCreateSession();
+    
+    // Сохраняем результат в новой схеме
+    await prisma.result.create({
       data: {
-        sessionId: result.sessionId,
         testId: result.testId,
-        testTitle: result.testTitle,
-        completedAt: new Date(result.completedAt),
-        answers: result.answers,
-        results: result.results,
+        sessionId: session.id,
+        version: 1, // Default version
+        summary: {
+          answers: result.answers,
+          results: result.results,
+          testTitle: result.testTitle,
+          completedAt: result.completedAt,
+        },
       },
     });
     
-    console.log('Test result saved to database:', result.sessionId);
+    console.log('Test result saved to database:', session.id);
     return true;
   } catch (error) {
     console.error('Error saving test result to database:', error);
@@ -23,20 +32,23 @@ export async function saveTestResult(result: RealTestResult) {
   }
 }
 
-// Функция для получения всех сохраненных результатов из БД
+// Функция для получения всех сохраненных результатов из БД (legacy wrapper)
 export async function getStoredTestResults(): Promise<RealTestResult[]> {
   try {
-    const results = await prisma.testResult.findMany({
-      orderBy: { completedAt: 'desc' },
+    const results = await prisma.result.findMany({
+      orderBy: { createdAt: 'desc' },
+      include: {
+        session: true,
+      },
     });
     
     return results.map((result: any) => ({
       sessionId: result.sessionId,
       testId: result.testId,
-      testTitle: result.testTitle,
-      completedAt: result.completedAt.toISOString(),
-      answers: result.answers as RealTestResult['answers'],
-      results: result.results as RealTestResult['results'],
+      testTitle: result.summary?.testTitle || 'Unknown Test',
+      completedAt: result.summary?.completedAt || result.createdAt.toISOString(),
+      answers: result.summary?.answers || {},
+      results: result.summary?.results || {},
     }));
   } catch (error) {
     console.error('Error loading test results from database:', error);
@@ -44,10 +56,11 @@ export async function getStoredTestResults(): Promise<RealTestResult[]> {
   }
 }
 
-// Функция для очистки всех результатов из БД
+// Функция для очистки всех результатов из БД (legacy wrapper)
 export async function clearStoredTestResults() {
   try {
-    await prisma.testResult.deleteMany();
+    // Удаляем все сессии (каскадное удаление результатов)
+    await prisma.session.deleteMany();
     console.log('All test results cleared from database');
     return true;
   } catch (error) {
@@ -56,21 +69,24 @@ export async function clearStoredTestResults() {
   }
 }
 
-// Функция для получения результатов по тесту из БД
+// Функция для получения результатов по тесту из БД (legacy wrapper)
 export async function getTestResultsByTestId(testId: string): Promise<RealTestResult[]> {
   try {
-    const results = await prisma.testResult.findMany({
+    const results = await prisma.result.findMany({
       where: { testId },
-      orderBy: { completedAt: 'desc' },
+      orderBy: { createdAt: 'desc' },
+      include: {
+        session: true,
+      },
     });
     
     return results.map((result: any) => ({
       sessionId: result.sessionId,
       testId: result.testId,
-      testTitle: result.testTitle,
-      completedAt: result.completedAt.toISOString(),
-      answers: result.answers as RealTestResult['answers'],
-      results: result.results as RealTestResult['results'],
+      testTitle: result.summary?.testTitle || 'Unknown Test',
+      completedAt: result.summary?.completedAt || result.createdAt.toISOString(),
+      answers: result.summary?.answers || {},
+      results: result.summary?.results || {},
     }));
   } catch (error) {
     console.error('Error loading test results by testId:', error);

@@ -11,7 +11,7 @@ import { prisma } from '@/lib/prisma';
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await getSession();
@@ -25,9 +25,11 @@ export async function GET(
       );
     }
 
+    const { id } = await params;
+
     const result = await prisma.result.findFirst({
       where: {
-        id: params.id,
+        id: id,
         sessionId: session.id, // Проверка принадлежности к сессии
       },
       include: {
