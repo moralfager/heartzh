@@ -126,6 +126,7 @@ model Result {
 model ResultDetail {
   id       String  @id @default(cuid())
   resultId String  @unique @map("result_id")
+  answers  Json    // ответы пользователя на вопросы
   details  Json    // по-вопросные данные, аудит расчёта
   
   result   Result  @relation(fields: [resultId], references: [id], onDelete: Cascade)
