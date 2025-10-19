@@ -1,5 +1,6 @@
 name: Deploy to VPS on push
 
+
 on:
   push:
     branches: [ "main" ]
@@ -51,7 +52,7 @@ jobs:
             git reset --hard origin/main
             git config --global --add safe.directory /var/www/heartzh
 
-            # Пересобираем и поднимаем
+            # Пересобираем и поднимаем  и смотрим
             docker compose -f docker-compose.prod.yml up -d --build
 
             # Диагностика
