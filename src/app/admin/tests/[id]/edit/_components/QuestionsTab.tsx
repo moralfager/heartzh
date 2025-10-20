@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { Plus, Edit2, Trash2, GripVertical, ChevronDown, ChevronUp } from 'lucide-react';
+import { QuestionEditor } from './QuestionEditor';
 
 interface AnswerOption {
   id: string;
@@ -26,9 +27,30 @@ interface QuestionsTabProps {
 
 export function QuestionsTab({ testId, questions, onRefresh }: QuestionsTabProps) {
   const [expandedQuestion, setExpandedQuestion] = useState<string | null>(null);
+  const [editingQuestion, setEditingQuestion] = useState<Question | null>(null);
+  const [isEditorOpen, setIsEditorOpen] = useState(false);
 
   const toggleExpand = (questionId: string) => {
     setExpandedQuestion(prev => prev === questionId ? null : questionId);
+  };
+
+  const handleEdit = (question: Question) => {
+    setEditingQuestion(question);
+    setIsEditorOpen(true);
+  };
+
+  const handleAdd = () => {
+    setEditingQuestion(null);
+    setIsEditorOpen(true);
+  };
+
+  const handleEditorClose = () => {
+    setIsEditorOpen(false);
+    setEditingQuestion(null);
+  };
+
+  const handleEditorSave = () => {
+    onRefresh();
   };
 
   const handleDelete = async (questionId: string) => {
@@ -66,6 +88,7 @@ export function QuestionsTab({ testId, questions, onRefresh }: QuestionsTabProps
           </p>
         </div>
         <button
+          onClick={handleAdd}
           className="inline-flex items-center px-4 py-2 bg-pink-500 hover:bg-pink-600 text-white rounded-xl transition-colors font-medium"
         >
           <Plus className="h-5 w-5 mr-2" />
@@ -128,6 +151,7 @@ export function QuestionsTab({ testId, questions, onRefresh }: QuestionsTabProps
                         )}
                       </button>
                       <button
+                        onClick={() => handleEdit(question)}
                         className="p-2 hover:bg-gray-200 rounded-lg transition-colors"
                         title="Редактировать"
                       >
@@ -182,6 +206,16 @@ export function QuestionsTab({ testId, questions, onRefresh }: QuestionsTabProps
           ))
         )}
       </div>
+
+      {/* Question Editor Modal */}
+      {isEditorOpen && (
+        <QuestionEditor
+          testId={testId}
+          question={editingQuestion}
+          onSave={handleEditorSave}
+          onClose={handleEditorClose}
+        />
+      )}
     </div>
   );
 }
