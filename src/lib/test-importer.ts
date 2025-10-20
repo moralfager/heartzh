@@ -12,48 +12,44 @@ import { z } from 'zod';
 import { createHash } from 'crypto';
 
 // ============================================================================
-// VALIDATION SCHEMAS
+// VALIDATION SCHEMAS (для реального формата)
 // ============================================================================
 
-const AnswerOptionSchema = z.object({
+// Схема для варианта ответа в реальном формате
+const RealAnswerOptionSchema = z.object({
+  id: z.string(),
+  label: z.string(),
+  domains: z.record(z.number()).optional(), // {"A_SECURE": 5}
+});
+
+// Схема для вопроса в реальном формате
+const RealQuestionSchema = z.object({
+  id: z.string(),
+  block: z.number(),
   text: z.string(),
-  value: z.number(),
-  weights: z.record(z.number()).optional(),
+  scale: z.string(), // "likert", "choice", etc
+  options: z.array(RealAnswerOptionSchema),
 });
 
-const QuestionSchema = z.object({
-  text: z.string(),
-  type: z.enum(['single', 'multi', 'scale', 'likert']),
-  options: z.array(AnswerOptionSchema),
-});
-
-const ScaleSchema = z.object({
-  key: z.string(),
-  name: z.string(),
-  min: z.number(),
-  max: z.number(),
-  bands: z
-    .array(
-      z.object({
-        to: z.number(),
-        label: z.string(),
-      })
-    )
-    .optional(),
-});
-
-const RuleSchema = z.object({
-  kind: z.enum(['threshold', 'combo', 'formula']),
-  payload: z.record(z.any()),
-});
-
-const TestJSONSchema = z.object({
+// Схема meta информации
+const MetaSchema = z.object({
+  id: z.string(),
   slug: z.string(),
   title: z.string(),
-  description: z.string().optional(),
-  questions: z.array(QuestionSchema),
-  scales: z.array(ScaleSchema),
-  rules: z.array(RuleSchema).optional(),
+  subtitle: z.string().optional(),
+  category: z.string().optional(),
+  tags: z.array(z.string()).optional(),
+  estMinutes: z.number().optional(),
+  questionsCount: z.number().optional(),
+  isPseudo: z.boolean().optional(),
+  languages: z.array(z.string()).optional(),
+  rating: z.number().optional(),
+});
+
+// Схема всего JSON файла (реальный формат)
+const TestJSONSchema = z.object({
+  meta: MetaSchema,
+  questions: z.array(RealQuestionSchema),
 });
 
 // ============================================================================
@@ -134,7 +130,7 @@ export async function importTest(
     forceUpdate?: boolean;
   } = {}
 ): Promise<ImportResult> {
-  const externalId = options.externalId || testData.slug;
+  const externalId = options.externalId || testData.meta.id;
 
   try {
     // Валидация
@@ -145,7 +141,7 @@ export async function importTest(
         success: false,
         action: 'skipped',
         message: 'Validation failed',
-        errors: validation.error.errors.map((e) => `${e.path}: ${e.message}`),
+        errors: validation.error.errors.map((e) => `${e.path.join(',')}: ${e.message}`),
       };
     }
 
@@ -167,7 +163,7 @@ export async function importTest(
 
     // Поиск существующего теста
     const existingTest = await prisma.test.findFirst({
-      where: { slug: validatedData.slug },
+      where: { slug: validatedData.meta.slug },
       orderBy: { version: 'desc' },
     });
 
@@ -176,44 +172,31 @@ export async function importTest(
     // Создание теста
     const test = await prisma.test.create({
       data: {
-        slug: validatedData.slug,
-        title: validatedData.title,
-        description: validatedData.description,
+        slug: validatedData.meta.slug,
+        title: validatedData.meta.title,
+        description: validatedData.meta.subtitle,
         version: newVersion,
         published: true,
         questions: {
           create: validatedData.questions.map((q, index) => ({
             order: index + 1,
             text: q.text,
-            type: q.type,
+            type: q.scale === 'likert' ? 'scale' : 'single', // конвертируем типы
             options: {
-              create: q.options.map((opt) => ({
-                text: opt.text,
-                value: opt.value,
-                weights: opt.weights || {},
+              create: q.options.map((opt, optIndex) => ({
+                text: opt.label,
+                value: optIndex + 1, // нумеруем от 1
+                weights: opt.domains || {},
               })),
             },
           })),
         },
-        scales: {
-          create: validatedData.scales.map((scale) => ({
-            key: scale.key,
-            name: scale.name,
-            min: scale.min,
-            max: scale.max,
-            bands: scale.bands || [],
-          })),
-        },
-        rules: validatedData.rules
-          ? {
-              create: validatedData.rules.map((rule) => ({
-                kind: rule.kind,
-                payload: rule.payload,
-              })),
-            }
-          : undefined,
+        // Пропускаем scales и rules пока, они будут генерироваться позже
       },
     });
+
+    // Для обратной совместимости с DSL: создаём шкалы из domains
+    // Это будет реализовано позже в Milestone 4
 
     // Запись импорта
     await recordImport(externalId, contentHash, test.id, 'applied');
@@ -289,4 +272,5 @@ export async function importTestsFromFile(
 
   return importTests(tests, options);
 }
+
 
