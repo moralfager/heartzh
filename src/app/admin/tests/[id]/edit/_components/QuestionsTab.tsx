@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Plus, Edit2, Trash2, GripVertical, ChevronDown, ChevronUp } from 'lucide-react';
+import { Plus, Edit2, Trash2, GripVertical, ChevronDown, ChevronUp, FileJson } from 'lucide-react';
 import { QuestionEditor } from './QuestionEditor';
 import {
   DndContext,
@@ -285,6 +285,43 @@ export function QuestionsTab({ testId, questions, onRefresh }: QuestionsTabProps
     }
   };
 
+  const handleExportForAI = () => {
+    // Export questions in a format suitable for AI to generate scales/rules
+    const exportData = {
+      testId,
+      questions: localQuestions.map((q, idx) => ({
+        number: idx + 1,
+        text: q.text,
+        type: q.type,
+        options: q.options.map((opt) => ({
+          text: opt.text,
+          value: opt.value,
+          weights: opt.weights,
+        })),
+      })),
+    };
+
+    const jsonString = JSON.stringify(exportData, null, 2);
+    
+    // Copy to clipboard
+    navigator.clipboard.writeText(jsonString).then(() => {
+      alert('✅ JSON экспортирован в буфер обмена!\n\nТеперь:\n1. Откройте JSON-IMPORT-GUIDE.md\n2. Скопируйте промт для ИИ\n3. Вставьте этот JSON + промт в ChatGPT/Claude\n4. Получите Scales + Rules JSON\n5. Импортируйте во вкладке "Правила"');
+    }).catch((err) => {
+      console.error('Failed to copy:', err);
+      // Fallback: download as file
+      const blob = new Blob([jsonString], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `questions-export-${testId}.json`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      alert('✅ JSON скачан как файл!');
+    });
+  };
+
   return (
     <div className="bg-white rounded-2xl shadow-sm border border-gray-100">
       {/* Header */}
@@ -297,13 +334,25 @@ export function QuestionsTab({ testId, questions, onRefresh }: QuestionsTabProps
             Всего вопросов: {questions.length}
           </p>
         </div>
-        <button
-          onClick={handleAdd}
-          className="inline-flex items-center px-4 py-2 bg-pink-500 hover:bg-pink-600 text-white rounded-xl transition-colors font-medium"
-        >
-          <Plus className="h-5 w-5 mr-2" />
-          Добавить вопрос
-        </button>
+        <div className="flex gap-3">
+          {questions.length > 0 && (
+            <button
+              onClick={handleExportForAI}
+              className="inline-flex items-center px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-xl transition-colors font-medium"
+              title="Экспортировать вопросы для генерации Scales/Rules через ИИ"
+            >
+              <FileJson className="h-5 w-5 mr-2" />
+              Экспорт для ИИ
+            </button>
+          )}
+          <button
+            onClick={handleAdd}
+            className="inline-flex items-center px-4 py-2 bg-pink-500 hover:bg-pink-600 text-white rounded-xl transition-colors font-medium"
+          >
+            <Plus className="h-5 w-5 mr-2" />
+            Добавить вопрос
+          </button>
+        </div>
       </div>
 
       {/* Questions List */}
