@@ -12,6 +12,21 @@ export async function GET(
   try {
     const { slug } = await params;
 
+    // Check if test exists (regardless of published status)
+    const testExists = await prisma.test.findFirst({
+      where: { slug },
+      select: { published: true },
+      orderBy: { version: 'desc' },
+    });
+
+    // If test exists but is not published, return 403
+    if (testExists && !testExists.published) {
+      return NextResponse.json(
+        { error: 'Test is currently unavailable' },
+        { status: 403 }
+      );
+    }
+
     // Find the latest published version of the test
     const test = await prisma.test.findFirst({
       where: {

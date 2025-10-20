@@ -45,6 +45,13 @@ export default function TestTakingPage({ params }: TestTakingPageProps) {
       const { slug: currentSlug } = await params;
       setSlug(currentSlug);
       const testData = await getTest(currentSlug);
+      
+      if (!testData) {
+        // Redirect to test page if test not found or unpublished
+        router.push(`/tests/${currentSlug}`);
+        return;
+      }
+      
       setTest(testData);
       
       // Generate or retrieve session ID

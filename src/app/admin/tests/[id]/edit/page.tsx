@@ -241,7 +241,6 @@ export default function EditTestPage({
                     errors.slug ? 'border-red-500' : 'border-gray-300'
                   }`}
                   required
-                  pattern="[a-z0-9-]+"
                 />
                 <p className="text-sm text-gray-500 mt-1">
                   Только строчные буквы, цифры и дефисы
