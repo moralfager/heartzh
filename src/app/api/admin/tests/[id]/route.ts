@@ -10,6 +10,7 @@ const UpdateTestSchema = z.object({
   version: z.number().int().positive().optional(),
   published: z.boolean().optional(),
   rating: z.number().min(0).max(5).optional(),
+  resultMode: z.enum(['engine', 'default']).optional(),
 });
 
 /**

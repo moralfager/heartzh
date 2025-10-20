@@ -48,6 +48,7 @@ export async function GET(
         },
         scales: true,
         rules: true,
+        defaultResult: true,
       },
       orderBy: {
         version: 'desc',
@@ -76,6 +77,8 @@ export async function GET(
         languages: ['ru'],
         rating: test.rating || 4.8,
       },
+      resultMode: test.resultMode || 'engine',
+      defaultResult: test.defaultResult,
       questions: test.questions.map((q) => ({
         id: q.id,
         block: 1, // Can be added to DB schema later

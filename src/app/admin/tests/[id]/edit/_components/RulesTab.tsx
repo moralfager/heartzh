@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Plus, Edit2, Trash2, GitBranch } from 'lucide-react';
+import { Plus, Edit2, Trash2, GitBranch, Upload, FileJson } from 'lucide-react';
 
 interface Rule {
   id: string;
@@ -14,6 +14,8 @@ export function RulesTab({ testId, onRefresh }: { testId: string; onRefresh?: ()
   const [isLoading, setIsLoading] = useState(true);
   const [editingRule, setEditingRule] = useState<Rule | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isImporting, setIsImporting] = useState(false);
+  const [importJson, setImportJson] = useState("");
 
   useEffect(() => {
     loadRules();
@@ -42,6 +44,30 @@ export function RulesTab({ testId, onRefresh }: { testId: string; onRefresh?: ()
     }
   };
 
+  const handleImport = async () => {
+    try {
+      const parsed = JSON.parse(importJson);
+      const res = await fetch(`/api/admin/tests/${testId}/import-rules`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(parsed)
+      });
+
+      if (res.ok) {
+        alert('Импорт успешен!');
+        setImportJson("");
+        setIsImporting(false);
+        loadRules();
+        onRefresh?.();
+      } else {
+        const error = await res.json();
+        alert(`Ошибка: ${error.error || 'Неизвестная ошибка'}`);
+      }
+    } catch (error) {
+      alert('Неверный JSON формат');
+    }
+  };
+
   if (isLoading) return <div className="p-6">Загрузка...</div>;
 
   return (
@@ -51,14 +77,58 @@ export function RulesTab({ testId, onRefresh }: { testId: string; onRefresh?: ()
           <h2 className="text-xl font-semibold">Правила расчёта</h2>
           <p className="text-sm text-gray-500 mt-1">Всего: {rules.length}</p>
         </div>
-        <button
-          onClick={() => { setEditingRule(null); setIsModalOpen(true); }}
-          className="px-4 py-2 bg-pink-500 hover:bg-pink-600 text-white rounded-xl flex items-center gap-2"
-        >
-          <Plus className="h-5 w-5" />
-          Добавить правило
-        </button>
+        <div className="flex gap-3">
+          <button
+            onClick={() => setIsImporting(!isImporting)}
+            className="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-xl flex items-center gap-2"
+          >
+            <Upload className="h-5 w-5" />
+            Импорт JSON
+          </button>
+          <button
+            onClick={() => { setEditingRule(null); setIsModalOpen(true); }}
+            className="px-4 py-2 bg-pink-500 hover:bg-pink-600 text-white rounded-xl flex items-center gap-2"
+          >
+            <Plus className="h-5 w-5" />
+            Добавить правило
+          </button>
+        </div>
       </div>
+
+      {/* Import JSON Section */}
+      {isImporting && (
+        <div className="p-6 border-b bg-blue-50">
+          <h3 className="text-lg font-semibold mb-3 flex items-center gap-2">
+            <FileJson className="h-5 w-5 text-blue-500" />
+            Импорт Scales + Rules из JSON
+          </h3>
+          <p className="text-sm text-gray-600 mb-4">
+            Вставьте JSON с массивами <code className="bg-white px-1 rounded">scales</code> и <code className="bg-white px-1 rounded">rules</code>. См. инструкцию ниже.
+          </p>
+          <textarea
+            value={importJson}
+            onChange={(e) => setImportJson(e.target.value)}
+            rows={12}
+            className="w-full px-4 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 font-mono text-sm"
+            placeholder='{\n  "scales": [...],\n  "rules": [...]\n}'
+          />
+          <div className="flex justify-end gap-3 mt-3">
+            <button
+              onClick={() => setIsImporting(false)}
+              className="px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded-xl"
+            >
+              Отмена
+            </button>
+            <button
+              onClick={handleImport}
+              className="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-xl flex items-center gap-2"
+            >
+              <Upload className="h-4 w-4" />
+              Импортировать
+            </button>
+          </div>
+        </div>
+      )}
 
       <div className="divide-y">
         {rules.length === 0 ? (

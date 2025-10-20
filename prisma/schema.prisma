@@ -22,13 +22,15 @@ model Test {
   version     Int        @default(1)
   published   Boolean    @default(false)
   rating      Float      @default(4.8) @db.Float
+  resultMode  String     @default("engine") @db.VarChar(20) @map("result_mode") // "engine" or "default"
   createdAt   DateTime   @default(now()) @map("created_at")
   updatedAt   DateTime   @updatedAt @map("updated_at")
   
-  questions   Question[]
-  scales      Scale[]
-  rules       Rule[]
-  results     Result[]
+  questions      Question[]
+  scales         Scale[]
+  rules          Rule[]
+  results        Result[]
+  defaultResult  DefaultResult?
   
   @@unique([slug, version])
   @@index([slug])
@@ -133,6 +135,24 @@ model ResultDetail {
   result   Result  @relation(fields: [resultId], references: [id], onDelete: Cascade)
   
   @@map("result_details")
+}
+
+// ============================================================================
+// DEFAULT RESULT (Fallback when no scales/rules)
+// ============================================================================
+
+model DefaultResult {
+  id              String   @id @default(cuid())
+  testId          String   @unique @map("test_id")
+  summaryType     String   @db.VarChar(255) @map("summary_type")
+  summary         String   @db.Text
+  scalesData      Json     @map("scales_data") // JSON with all scale values
+  createdAt       DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+  
+  test            Test     @relation(fields: [testId], references: [id], onDelete: Cascade)
+  
+  @@map("default_results")
 }
 
 // ============================================================================

@@ -3,10 +3,11 @@
 import { useState, useEffect, use } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { ArrowLeft, Save, FileText, HelpCircle, BarChart, GitBranch } from "lucide-react";
+import { ArrowLeft, Save, FileText, HelpCircle, BarChart, GitBranch, Settings } from "lucide-react";
 import { QuestionsTab } from "./_components/QuestionsTab";
 import { ScalesTab } from "./_components/ScalesTab";
 import { RulesTab } from "./_components/RulesTab";
+import { DefaultResultTab } from "./_components/DefaultResultTab";
 
 interface Test {
   id: string;
@@ -35,7 +36,7 @@ export default function EditTestPage({
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
-  const [activeTab, setActiveTab] = useState<'info' | 'questions' | 'scales' | 'rules'>('info');
+  const [activeTab, setActiveTab] = useState<'info' | 'questions' | 'scales' | 'rules' | 'default'>('info');
 
   const [formData, setFormData] = useState({
     slug: '',
@@ -44,6 +45,7 @@ export default function EditTestPage({
     version: 1,
     published: false,
     rating: 4.8,
+    resultMode: 'engine' as 'engine' | 'default',
   });
 
   useEffect(() => {
@@ -64,6 +66,7 @@ export default function EditTestPage({
           version: data.version,
           published: data.published,
           rating: data.rating || 4.8,
+          resultMode: (data.resultMode || 'engine') as 'engine' | 'default',
         });
       } else {
         console.error('Error loading test:', data.error);
@@ -151,6 +154,7 @@ export default function EditTestPage({
     { id: 'questions', name: `Вопросы (${test._count.questions})`, icon: HelpCircle },
     { id: 'scales', name: `Шкалы (${test._count.scales})`, icon: BarChart },
     { id: 'rules', name: `Правила (${test._count.rules})`, icon: GitBranch },
+    { id: 'default', name: 'Результат по умолчанию', icon: Settings },
   ];
 
   return (
@@ -326,6 +330,43 @@ export default function EditTestPage({
                   <p className="text-red-500 text-sm mt-1">{errors.rating}</p>
                 )}
               </div>
+
+              {/* Result Mode */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-3">
+                  Режим расчёта результатов
+                </label>
+                <div className="flex gap-4">
+                  <label className="flex items-center space-x-3 cursor-pointer">
+                    <input
+                      type="radio"
+                      name="resultMode"
+                      value="engine"
+                      checked={formData.resultMode === 'engine'}
+                      onChange={(e) => handleChange('resultMode', e.target.value as 'engine' | 'default')}
+                      className="w-4 h-4 text-pink-500 focus:ring-pink-500"
+                    />
+                    <div>
+                      <span className="text-gray-800 font-medium">Движок (Engine)</span>
+                      <p className="text-xs text-gray-500">Использовать шкалы и правила</p>
+                    </div>
+                  </label>
+                  <label className="flex items-center space-x-3 cursor-pointer">
+                    <input
+                      type="radio"
+                      name="resultMode"
+                      value="default"
+                      checked={formData.resultMode === 'default'}
+                      onChange={(e) => handleChange('resultMode', e.target.value as 'engine' | 'default')}
+                      className="w-4 h-4 text-pink-500 focus:ring-pink-500"
+                    />
+                    <div>
+                      <span className="text-gray-800 font-medium">По умолчанию</span>
+                      <p className="text-xs text-gray-500">Фиксированный результат</p>
+                    </div>
+                  </label>
+                </div>
+              </div>
             </div>
           </div>
 
@@ -399,6 +440,10 @@ export default function EditTestPage({
 
       {activeTab === 'rules' && (
         <RulesTab testId={test.id} onRefresh={loadTest} />
+      )}
+
+      {activeTab === 'default' && (
+        <DefaultResultTab testId={test.id} />
       )}
     </div>
   );

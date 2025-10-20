@@ -6,6 +6,7 @@ import Link from "next/link";
 import { Heart, Share2, Download, ArrowLeft, Star, TrendingUp, Users, Shield } from "lucide-react";
 import { TestDefinition, SessionAnswer, ResultProfile } from "@/lib/types";
 import { calculateScores, generateResultProfile } from "@/lib/scoring";
+import { computeResult } from "@/lib/result-engine";
 
 // Get test data from API (database)
 async function getTest(slug: string): Promise<TestDefinition | null> {
@@ -51,9 +52,49 @@ export default function ResultsPage({ params }: ResultsPageProps) {
         if (savedAnswers) {
           const answers: SessionAnswer[] = JSON.parse(savedAnswers);
           
-          // Calculate scores first
-          const scores = calculateScores(answers, testData.questions);
-          const profile = generateResultProfile(scores);
+          let profile: ResultProfile;
+          
+          // Check result mode
+          if (testData.resultMode === 'default' && testData.defaultResult) {
+            // Use default result
+            profile = {
+              ...testData.defaultResult.scalesData,
+              summaryType: testData.defaultResult.summaryType,
+              summary: testData.defaultResult.summary,
+              tips: [
+                "Это фиксированный результат по умолчанию",
+                "Администратор может настроить его во вкладке 'Результат по умолчанию'"
+              ],
+            };
+          } else if (testData.scales && testData.scales.length > 0 && testData.rules && testData.rules.length > 0) {
+            // Use Result Engine
+            try {
+              const engineResult = await computeResult(answers, testData.scales, testData.rules);
+              profile = {
+                attachment: engineResult.scaleScores.attachment || { secure: 0, anxious: 0, avoidant: 0 },
+                values: engineResult.scaleScores.values || { support: 0, passion: 0, security: 0, growth: 0 },
+                loveLanguage: engineResult.scaleScores.loveLanguage || { words: 0, time: 0, gifts: 0, service: 0, touch: 0 },
+                conflict: engineResult.scaleScores.conflict || { collab: 0, comprom: 0, avoid: 0, accom: 0, compete: 0 },
+                expressions: engineResult.scaleScores.expressions || {},
+                gifts: engineResult.scaleScores.gifts || {},
+                dates: engineResult.scaleScores.dates || {},
+                care: engineResult.scaleScores.care || {},
+                summaryType: engineResult.interpretations[0]?.text || "Ваш результат",
+                summary: engineResult.interpretations.map(i => i.text).join(' ') || "Результат обрабатывается...",
+                tips: engineResult.patterns.map(p => p.interpretation) || [],
+              };
+            } catch (error) {
+              console.error('Engine error, fallback to legacy:', error);
+              // Fallback to legacy if engine fails
+              const scores = calculateScores(answers, testData.questions);
+              profile = generateResultProfile(scores);
+            }
+          } else {
+            // Fallback to legacy scoring
+            const scores = calculateScores(answers, testData.questions);
+            profile = generateResultProfile(scores);
+          }
+          
           setResult(profile);
           
           // Сохраняем результат через новый API
