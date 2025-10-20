@@ -74,7 +74,7 @@ export async function GET(
         questionsCount: test.questions.length,
         isPseudo: true,
         languages: ['ru'],
-        rating: 4.8,
+        rating: test.rating || 4.8,
       },
       questions: test.questions.map((q) => ({
         id: q.id,

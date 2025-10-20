@@ -172,9 +172,59 @@ export async function DELETE(
       );
     }
 
-    // Delete test (cascade delete will handle related data)
-    await prisma.test.delete({
-      where: { id },
+    // Delete test and all related data manually
+    // (cascade delete doesn't work for Results through Sessions)
+    await prisma.$transaction(async (tx) => {
+      // 1. Delete all ResultDetails for this test's results
+      await tx.resultDetail.deleteMany({
+        where: {
+          result: {
+            testId: id,
+          },
+        },
+      });
+
+      // 2. Delete all Results for this test
+      await tx.result.deleteMany({
+        where: {
+          testId: id,
+        },
+      });
+
+      // 3. Delete AnswerOptions
+      await tx.answerOption.deleteMany({
+        where: {
+          question: {
+            testId: id,
+          },
+        },
+      });
+
+      // 4. Delete Questions
+      await tx.question.deleteMany({
+        where: {
+          testId: id,
+        },
+      });
+
+      // 5. Delete Scales
+      await tx.scale.deleteMany({
+        where: {
+          testId: id,
+        },
+      });
+
+      // 6. Delete Rules
+      await tx.rule.deleteMany({
+        where: {
+          testId: id,
+        },
+      });
+
+      // 7. Finally, delete the Test itself
+      await tx.test.delete({
+        where: { id },
+      });
     });
 
     return NextResponse.json({ 

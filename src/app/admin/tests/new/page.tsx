@@ -153,7 +153,6 @@ export default function NewTestPage() {
                 }`}
                 placeholder="love-psychology"
                 required
-                pattern="[a-z0-9-]+"
               />
               <p className="text-sm text-gray-500 mt-1">
                 Только строчные буквы, цифры и дефисы. Например: love-psychology
