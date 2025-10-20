@@ -4,6 +4,7 @@ import { useState, useEffect, use } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft, Save, FileText, HelpCircle, BarChart, GitBranch } from "lucide-react";
+import { QuestionsTab } from "./_components/QuestionsTab";
 
 interface Test {
   id: string;
@@ -360,17 +361,11 @@ export default function EditTestPage({
       )}
 
       {activeTab === 'questions' && (
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-          <div className="text-center py-12">
-            <HelpCircle className="h-16 w-16 text-gray-300 mx-auto mb-4" />
-            <p className="text-gray-600 mb-4">
-              Управление вопросами будет доступно в следующей версии
-            </p>
-            <p className="text-sm text-gray-500">
-              Сейчас вопросы можно добавлять только через импорт JSON
-            </p>
-          </div>
-        </div>
+        <QuestionsTab
+          testId={test.id}
+          questions={test.questions || []}
+          onRefresh={loadTest}
+        />
       )}
 
       {activeTab === 'scales' && (
