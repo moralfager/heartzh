@@ -21,7 +21,7 @@ const ScaleSchema = z.object({
 });
 
 const RuleSchema = z.object({
-  type: z.enum(['threshold', 'formula', 'combo']),
+  kind: z.enum(['threshold', 'formula', 'combo']),
   priority: z.number().int().default(100),
   payload: z.record(z.any()), // JSON payload
 });
@@ -83,7 +83,7 @@ export async function POST(
         const created = await tx.rule.create({
           data: {
             testId: id,
-            type: rule.type,
+            kind: rule.kind,
             priority: rule.priority,
             payload: rule.payload,
           },
