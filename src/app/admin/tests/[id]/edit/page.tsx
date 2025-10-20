@@ -5,6 +5,8 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft, Save, FileText, HelpCircle, BarChart, GitBranch } from "lucide-react";
 import { QuestionsTab } from "./_components/QuestionsTab";
+import { ScalesTab } from "./_components/ScalesTab";
+import { RulesTab } from "./_components/RulesTab";
 
 interface Test {
   id: string;
@@ -392,31 +394,11 @@ export default function EditTestPage({
       )}
 
       {activeTab === 'scales' && (
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-          <div className="text-center py-12">
-            <BarChart className="h-16 w-16 text-gray-300 mx-auto mb-4" />
-            <p className="text-gray-600 mb-4">
-              Управление шкалами будет доступно в следующей версии
-            </p>
-            <p className="text-sm text-gray-500">
-              Сейчас шкалы можно добавлять только через импорт JSON
-            </p>
-          </div>
-        </div>
+        <ScalesTab testId={test.id} onRefresh={loadTest} />
       )}
 
       {activeTab === 'rules' && (
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-          <div className="text-center py-12">
-            <GitBranch className="h-16 w-16 text-gray-300 mx-auto mb-4" />
-            <p className="text-gray-600 mb-4">
-              Управление правилами будет доступно в следующей версии
-            </p>
-            <p className="text-sm text-gray-500">
-              Сейчас правила можно добавлять только через импорт JSON
-            </p>
-          </div>
-        </div>
+        <RulesTab testId={test.id} onRefresh={loadTest} />
       )}
     </div>
   );
