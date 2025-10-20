@@ -203,17 +203,17 @@ export default function TestTakingPage({ params }: TestTakingPageProps) {
                 <label
                   key={option.id}
                   className={`block p-4 rounded-xl border-2 cursor-pointer transition-all duration-200 ${
-                    currentAnswer === (currentQuestion.scale === 'likert' ? parseInt(option.id) : option.id)
+                    currentAnswer === option.id
                       ? 'border-pink-500 bg-pink-50'
                       : 'border-gray-200 hover:border-pink-300 hover:bg-gray-50'
                   }`}
                 >
                   <input
-                    type={currentQuestion.scale === 'likert' ? 'radio' : 'radio'}
+                    type="radio"
                     name="answer"
-                    value={currentQuestion.scale === 'likert' ? parseInt(option.id) : option.id}
-                    checked={currentAnswer === (currentQuestion.scale === 'likert' ? parseInt(option.id) : option.id)}
-                    onChange={() => handleAnswerChange(currentQuestion.scale === 'likert' ? parseInt(option.id) : option.id)}
+                    value={option.id}
+                    checked={currentAnswer === option.id}
+                    onChange={() => handleAnswerChange(option.id)}
                     className="sr-only"
                   />
                   <span className="text-gray-800 font-medium">

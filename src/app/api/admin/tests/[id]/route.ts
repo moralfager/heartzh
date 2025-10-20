@@ -9,6 +9,7 @@ const UpdateTestSchema = z.object({
   description: z.string().max(1000).optional(),
   version: z.number().int().positive().optional(),
   published: z.boolean().optional(),
+  rating: z.number().min(0).max(5).optional(),
 });
 
 /**

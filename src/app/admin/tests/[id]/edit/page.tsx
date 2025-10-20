@@ -41,6 +41,7 @@ export default function EditTestPage({
     description: '',
     version: 1,
     published: false,
+    rating: 4.8,
   });
 
   useEffect(() => {
@@ -60,6 +61,7 @@ export default function EditTestPage({
           description: data.description || '',
           version: data.version,
           published: data.published,
+          rating: data.rating || 4.8,
         });
       } else {
         console.error('Error loading test:', data.error);
@@ -300,6 +302,28 @@ export default function EditTestPage({
                 <label htmlFor="published" className="text-sm font-medium text-gray-700">
                   Опубликован
                 </label>
+              </div>
+
+              {/* Rating */}
+              <div>
+                <label htmlFor="rating" className="block text-sm font-medium text-gray-700 mb-2">
+                  Рейтинг (от 0 до 5)
+                </label>
+                <input
+                  type="number"
+                  id="rating"
+                  value={formData.rating || 4.8}
+                  onChange={(e) => handleChange('rating', parseFloat(e.target.value))}
+                  min="0"
+                  max="5"
+                  step="0.1"
+                  className={`w-full px-4 py-2 border rounded-xl focus:ring-2 focus:ring-pink-500 focus:border-pink-500 ${
+                    errors.rating ? 'border-red-500' : 'border-gray-300'
+                  }`}
+                />
+                {errors.rating && (
+                  <p className="text-red-500 text-sm mt-1">{errors.rating}</p>
+                )}
               </div>
             </div>
           </div>

@@ -21,6 +21,7 @@ model Test {
   description String?    @db.Text
   version     Int        @default(1)
   published   Boolean    @default(false)
+  rating      Float      @default(4.8) @db.Float
   createdAt   DateTime   @default(now()) @map("created_at")
   updatedAt   DateTime   @updatedAt @map("updated_at")
   

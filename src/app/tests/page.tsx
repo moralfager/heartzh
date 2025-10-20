@@ -2,63 +2,45 @@ import Link from "next/link";
 import { Heart, Star, Clock, Search, Filter } from "lucide-react";
 import { TestMeta } from "@/lib/types";
 
-// Mock data for now - in real app this would come from API
-const mockTests: TestMeta[] = [
-  {
-    id: "love-psychology-001",
-    slug: "love-psychology",
-    title: "Психология Любви",
-    subtitle: "Узнай свой тип привязанности, ценности в отношениях, язык любви и стиль решения конфликтов",
-    category: "relationships",
-    tags: ["для пары", "язык любви", "ценности", "привязанность"],
-    estMinutes: 7,
-    questionsCount: 50,
-    isPseudo: true,
-    languages: ["ru", "kz"],
-    rating: 4.8
-  },
-  {
-    id: "love-expressions-001",
-    slug: "love-expressions",
-    title: "Как ты проявляешь свою любовь?",
-    subtitle: "Узнай свой стиль проявления любви, предпочтения в подарках и идеальные свидания",
-    category: "relationships",
-    tags: ["проявления любви", "подарки", "свидания", "романтика"],
-    estMinutes: 8,
-    questionsCount: 50,
-    isPseudo: true,
-    languages: ["ru", "kz"],
-    rating: 4.9
-  },
-  {
-    id: "compatibility-001",
-    slug: "compatibility",
-    title: "Совместимость в отношениях",
-    subtitle: "Узнай, насколько вы подходите друг другу в отношениях",
-    category: "relationships",
-    tags: ["для пары", "совместимость"],
-    estMinutes: 5,
-    questionsCount: 30,
-    isPseudo: true,
-    languages: ["ru"],
-    rating: 4.6
-  },
-  {
-    id: "emotional-intelligence-001",
-    slug: "emotional-intelligence",
-    title: "Эмоциональный интеллект",
-    subtitle: "Оцени свой уровень эмоционального интеллекта в отношениях",
-    category: "personality",
-    tags: ["эмоции", "самопознание"],
-    estMinutes: 6,
-    questionsCount: 40,
-    isPseudo: true,
-    languages: ["ru"],
-    rating: 4.7
-  }
-];
+// Get tests from API (database)
+async function getTests(): Promise<TestMeta[]> {
+  try {
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
+    const response = await fetch(`${baseUrl}/api/admin/tests`, {
+      next: { revalidate: 60 }, // Cache for 60 seconds
+    });
 
-export default function TestsPage() {
+    if (!response.ok) {
+      return [];
+    }
+
+    const data = await response.json();
+    const tests = data.tests || [];
+    
+    // Transform to TestMeta format and filter only published tests
+    return tests
+      .filter((test: any) => test.published)
+      .map((test: any) => ({
+        id: test.id,
+        slug: test.slug,
+        title: test.title,
+        subtitle: test.description || '',
+        category: 'relationships', // Default category
+        tags: [], // Can be added to DB schema later
+        estMinutes: Math.ceil(test._count.questions / 7),
+        questionsCount: test._count.questions,
+        isPseudo: true,
+        languages: ['ru'],
+        rating: test.rating || 4.8,
+      }));
+  } catch (error) {
+    console.error('Error fetching tests:', error);
+    return [];
+  }
+}
+
+export default async function TestsPage() {
+  const tests = await getTests();
   return (
     <div className="min-h-screen gradient-bg">
       {/* Header */}
@@ -131,7 +113,7 @@ export default function TestsPage() {
 
         {/* Tests Grid */}
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {mockTests.map((test) => (
+          {tests.map((test) => (
             <Link
               key={test.id}
               href={`/tests/${test.slug}`}
