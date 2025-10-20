@@ -632,35 +632,38 @@ const result = computeResult({
 // result.compositeScores = { creativity: { value: 38.7, ... } }
 ```
 
-### 🎯 Следующие шаги:
+### ✅ ЗАВЕРШЕНО!
 
-**Задача 4.8:** UI для Scales (1-2 часа)
-- ScalesTab component в редакторе теста
-- Форма создания/редактирования scale
-- Редактор bands (диапазоны)
-- API endpoints
+**M4 100% готово!** Все задачи выполнены:
 
-**Задача 4.9:** UI для Rules (2-3 часа)
-- RulesTab component
-- Visual editor для threshold rules
-- Formula editor с превью
-- Combo rules builder
+✅ **4.8** UI для Scales - ScalesTab + API  
+✅ **4.9** UI для Rules - RulesTab + JSON editor + Import  
+✅ **4.10** Интеграция - результаты используют движок  
+✅ **Бонус:** Режимы (engine/default) + AI-машина  
 
-**Задача 4.10:** Интеграция (1 час)
-- Заменить hardcoded `calculateScores()`
-- Использовать `computeResult()` на странице результатов
-- Мигрировать существующие тесты
+### 📦 Полная статистика:
 
-### 📦 Файлы созданы:
-- 7 новых файлов (~1430 строк)
-- Полная документация
-- Примеры использования
-- План интеграции
+**Создано файлов:**
+- 11 новых файлов кода (~1600 строк)
+- 3 документа (~700 строк markdown)
+
+**Фичи:**
+1. Result Engine (DSL движок)
+2. Scales + Rules UI
+3. JSON Import System
+4. Default Result Mode
+5. Engine Result Mode  
+6. AI-powered workflow
 
 **Коммиты:**
 - `6125330` - feat(m4): add result engine core
 - `a3dcfed` - docs: update PROGRESS.md
 - `0a9f547` - feat(m4): add Scales and Rules UI
+- `dbe7949` - docs: update M4 progress to 90%
+- `831d950` - docs: add M4 summary
+- `a7be91f` - feat: add result modes + JSON import + full integration
+- `b3202da` - docs: add comprehensive feature summary
+- `b2ad06f` - ui: add AI quick start hint
 
 ---
 
