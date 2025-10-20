@@ -102,9 +102,20 @@ export function RulesTab({ testId, onRefresh }: { testId: string; onRefresh?: ()
             <FileJson className="h-5 w-5 text-blue-500" />
             Импорт Scales + Rules из JSON
           </h3>
-          <p className="text-sm text-gray-600 mb-4">
-            Вставьте JSON с массивами <code className="bg-white px-1 rounded">scales</code> и <code className="bg-white px-1 rounded">rules</code>. См. инструкцию ниже.
-          </p>
+          <div className="mb-4 space-y-2">
+            <p className="text-sm text-gray-600">
+              Вставьте JSON с массивами <code className="bg-white px-1 rounded">scales</code> и <code className="bg-white px-1 rounded">rules</code>.
+            </p>
+            <div className="bg-white rounded-lg p-3 text-xs text-gray-700 border border-blue-200">
+              <p className="font-medium mb-1">💡 Быстрый старт с ИИ:</p>
+              <ol className="list-decimal list-inside space-y-1">
+                <li>Откройте <strong>JSON-IMPORT-GUIDE.md</strong> в корне проекта</li>
+                <li>Скопируйте промт для ChatGPT/Claude</li>
+                <li>Опишите ваш тест → Получите JSON</li>
+                <li>Вставьте сюда → Импортировать ✨</li>
+              </ol>
+            </div>
+          </div>
           <textarea
             value={importJson}
             onChange={(e) => setImportJson(e.target.value)}
