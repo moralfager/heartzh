@@ -7,17 +7,23 @@ import { Heart, Share2, Download, ArrowLeft, Star, TrendingUp, Users, Shield } f
 import { TestDefinition, SessionAnswer, ResultProfile } from "@/lib/types";
 import { calculateScores, generateResultProfile } from "@/lib/scoring";
 
-// Mock function to get test data
+// Get test data from API (database)
 async function getTest(slug: string): Promise<TestDefinition | null> {
-  if (slug === "love-psychology") {
-    const testData = await import("../../../../../public/tests/love-psychology.json");
-    return testData.default as unknown as TestDefinition;
+  try {
+    const response = await fetch(`http://localhost:3000/api/tests/${slug}`, {
+      cache: 'no-store', // Fresh data for results
+    });
+
+    if (!response.ok) {
+      return null;
+    }
+
+    const testData = await response.json();
+    return testData as TestDefinition;
+  } catch (error) {
+    console.error('Error fetching test:', error);
+    return null;
   }
-  if (slug === "love-expressions") {
-    const testData = await import("../../../../../public/tests/love-expressions.json");
-    return testData.default as unknown as TestDefinition;
-  }
-  return null;
 }
 
 interface ResultsPageProps {

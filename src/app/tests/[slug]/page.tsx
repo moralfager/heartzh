@@ -3,17 +3,24 @@ import { notFound } from "next/navigation";
 import { Heart, Star, Clock, Users, ArrowRight, CheckCircle, Shield } from "lucide-react";
 import { TestDefinition } from "@/lib/types";
 
-// Mock function to get test data - in real app this would be an API call
+// Get test data from API (database)
 async function getTest(slug: string): Promise<TestDefinition | null> {
-  if (slug === "love-psychology") {
-    const testData = await import("../../../../public/tests/love-psychology.json");
-    return testData.default as unknown as TestDefinition;
+  try {
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
+    const response = await fetch(`${baseUrl}/api/tests/${slug}`, {
+      next: { revalidate: 60 }, // Cache for 60 seconds
+    });
+
+    if (!response.ok) {
+      return null;
+    }
+
+    const testData = await response.json();
+    return testData as TestDefinition;
+  } catch (error) {
+    console.error('Error fetching test:', error);
+    return null;
   }
-  if (slug === "love-expressions") {
-    const testData = await import("../../../../public/tests/love-expressions.json");
-    return testData.default as unknown as TestDefinition;
-  }
-  return null;
 }
 
 export default async function TestLandingPage({ params }: { params: Promise<{ slug: string }> }) {
