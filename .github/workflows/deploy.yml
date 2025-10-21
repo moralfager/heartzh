@@ -23,9 +23,10 @@ jobs:
           ssh -o StrictHostKeyChecking=no -p ${{ secrets.SSH_PORT || 22 }} ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
             set -e
             cd /var/www/heartzh
+            git config --global --add safe.directory /var/www/heartzh
             git fetch --all
             git reset --hard origin/prod
-            git config --global --add safe.directory /var/www/heartzh
-            docker compose -f docker-compose.prod.yml up -d --build
+            docker compose -f docker-compose.prod.yml down
+            docker compose -f docker-compose.prod.yml up -d --build --no-cache
             docker ps
           EOF
