@@ -1,12 +1,9 @@
 name: Deploy to VPS (prod branch)
 
-# TEMPORARILY DISABLED: SSH connections from GitHub Actions are blocked by server
-# Use manual deploy script instead: .\deploy-manual.ps1
-
 on:
-  # push:
-  #   branches: [ "prod" ]
-  workflow_dispatch:  # Manual trigger only
+  push:
+    branches: [ "prod" ]   # автодеплой при push в prod
+  workflow_dispatch:        # можно запустить вручную
 
 jobs:
   deploy:
@@ -40,5 +37,15 @@ jobs:
             echo "🚀 Starting containers..."
             docker compose -f docker-compose.prod.yml up -d
             
+            echo ""
+            echo "⏳ Waiting for containers to start..."
+            sleep 10
+            
+            echo ""
             echo "✅ Deployment complete!"
+            echo "📊 Container Status:"
             docker ps
+            
+            echo ""
+            echo "🔍 Last 20 lines of logs:"
+            docker compose -f docker-compose.prod.yml logs --tail=20 psychotest
