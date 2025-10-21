@@ -32,10 +32,11 @@ jobs:
             docker compose -f docker-compose.prod.yml down || true
             
             echo "🧹 Cleaning up processes on port 3000..."
-            sudo pkill -f next-server || true
-            sudo pkill -f node || true
+            pkill -f next-server || true
+            pkill -f node || true
             pm2 stop all || true
             pm2 delete all || true
+            pm2 save --force || true
             
             echo "⏳ Waiting for port to be freed..."
             sleep 3
