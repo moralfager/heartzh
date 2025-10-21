@@ -125,10 +125,15 @@ export interface ResultProfile {
 export interface TestDefinition {
   meta: TestMeta;
   questions: Question[];
-  scoring: {
+  scoring?: {
     type: 'weighted-domains';
   };
-  resultRules: ResultRule[];
+  resultRules?: ResultRule[];
+  // New engine fields
+  resultMode?: string;
+  defaultResult?: any;
+  scales?: any[];
+  rules?: any[];
 }
 
 export interface ResultRule {

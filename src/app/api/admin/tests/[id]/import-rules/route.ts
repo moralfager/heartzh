@@ -21,10 +21,16 @@ const ScaleSchema = z.object({
 });
 
 const RuleSchema = z.object({
-  kind: z.enum(['threshold', 'formula', 'combo']),
+  type: z.enum(['threshold', 'formula', 'combo']).optional(), // Для обратной совместимости с ChatGPT
+  kind: z.enum(['threshold', 'formula', 'combo']).optional(),
   priority: z.number().int().default(100),
   payload: z.record(z.any()), // JSON payload
-});
+}).transform((data) => ({
+  // Если указан type, используем его как kind
+  kind: data.kind || data.type || 'threshold',
+  priority: data.priority,
+  payload: data.payload,
+}));
 
 const ImportSchema = z.object({
   scales: z.array(ScaleSchema),

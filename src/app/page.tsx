@@ -18,9 +18,6 @@ export default function Home() {
             <Link href="/about" className="text-gray-600 hover:text-pink-600 transition-colors">
               О проекте
             </Link>
-            <Link href="/admin" className="text-gray-600 hover:text-pink-600 transition-colors">
-              Админка
-            </Link>
           </div>
         </nav>
       </header>

@@ -29,7 +29,8 @@ export function applyThresholdRules(
   const interpretations: Record<string, Interpretation> = {};
 
   rules.forEach(rule => {
-    const { scaleKey, ranges } = rule.payload;
+    const payload = rule.payload;
+    const scaleKey = payload.scaleKey;
     const score = scaleScores[scaleKey];
 
     if (score === undefined) {
@@ -37,22 +38,69 @@ export function applyThresholdRules(
       return;
     }
 
-    // Находим подходящий range
-    const range = findBand(ranges, score);
+    // Поддержка двух форматов:
+    // 1. Формат с ranges (DSL): { scaleKey, ranges: [{to, label}] }
+    // 2. Формат ChatGPT: { scaleKey, threshold, operator, interpretation: {summaryType, summary} }
+    
+    if (payload.ranges) {
+      // Формат 1: DSL с ranges
+      const range = findBand(payload.ranges, score);
 
-    if (!range) {
-      console.warn(`[ThresholdRule] No range found for score ${score} in scale ${scaleKey}`);
-      return;
+      if (!range) {
+        console.warn(`[ThresholdRule] No range found for score ${score} in scale ${scaleKey}`);
+        return;
+      }
+
+      interpretations[scaleKey] = {
+        scaleKey,
+        score,
+        label: range.label,
+        title: range.title,
+        description: range.description,
+        recommendations: range.recommendations,
+      };
+    } else if (payload.threshold !== undefined && payload.operator && payload.interpretation) {
+      // Формат 2: ChatGPT с threshold
+      const threshold = payload.threshold;
+      const operator = payload.operator;
+      const interpretation = payload.interpretation;
+      
+      let matches = false;
+      switch (operator) {
+        case '>=':
+          matches = score >= threshold;
+          break;
+        case '>':
+          matches = score > threshold;
+          break;
+        case '<=':
+          matches = score <= threshold;
+          break;
+        case '<':
+          matches = score < threshold;
+          break;
+        case '==':
+        case '=':
+          matches = score === threshold;
+          break;
+        default:
+          console.warn(`[ThresholdRule] Unknown operator: ${operator}`);
+          return;
+      }
+
+      if (matches) {
+        interpretations[scaleKey] = {
+          scaleKey,
+          score,
+          label: interpretation.summaryType || 'Result',
+          title: interpretation.summaryType,
+          description: interpretation.summary,
+          recommendations: interpretation.tips || [],
+        };
+      }
+    } else {
+      console.warn(`[ThresholdRule] Invalid payload format for scale ${scaleKey}`, payload);
     }
-
-    interpretations[scaleKey] = {
-      scaleKey,
-      score,
-      label: range.label,
-      title: range.title,
-      description: range.description,
-      recommendations: range.recommendations,
-    };
   });
 
   return interpretations;
@@ -70,6 +118,12 @@ function evaluateExpression(
   expr: string,
   variables: Record<string, number>
 ): number {
+  // Проверка что expr - строка
+  if (!expr || typeof expr !== 'string') {
+    console.warn('[evaluateExpression] expr is not a string:', expr);
+    return 0;
+  }
+
   // Замена переменных на значения
   let processedExpr = expr;
 

@@ -45,6 +45,24 @@ export function ScalesTab({ testId, onRefresh }: { testId: string; onRefresh?: (
     }
   };
 
+  const handleDeleteAll = async () => {
+    if (!confirm(`Удалить ВСЕ ${scales.length} шкал? Это действие необратимо!`)) return;
+    
+    try {
+      setIsLoading(true);
+      await Promise.all(
+        scales.map(scale => 
+          fetch(`/api/admin/tests/${testId}/scales/${scale.id}`, { method: 'DELETE' })
+        )
+      );
+      alert('✅ Все шкалы удалены');
+      loadScales();
+    } catch (error) {
+      alert('Ошибка удаления');
+      setIsLoading(false);
+    }
+  };
+
   if (isLoading) return <div className="p-6">Загрузка...</div>;
 
   return (
@@ -54,13 +72,24 @@ export function ScalesTab({ testId, onRefresh }: { testId: string; onRefresh?: (
           <h2 className="text-xl font-semibold">Шкалы результатов</h2>
           <p className="text-sm text-gray-500 mt-1">Всего: {scales.length}</p>
         </div>
-        <button
-          onClick={() => { setEditingScale(null); setIsModalOpen(true); }}
-          className="px-4 py-2 bg-pink-500 hover:bg-pink-600 text-white rounded-xl flex items-center gap-2"
-        >
-          <Plus className="h-5 w-5" />
-          Добавить шкалу
-        </button>
+        <div className="flex gap-3">
+          {scales.length > 0 && (
+            <button
+              onClick={handleDeleteAll}
+              className="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-xl flex items-center gap-2"
+            >
+              <Trash2 className="h-5 w-5" />
+              Удалить все
+            </button>
+          )}
+          <button
+            onClick={() => { setEditingScale(null); setIsModalOpen(true); }}
+            className="px-4 py-2 bg-pink-500 hover:bg-pink-600 text-white rounded-xl flex items-center gap-2"
+          >
+            <Plus className="h-5 w-5" />
+            Добавить шкалу
+          </button>
+        </div>
       </div>
 
       <div className="divide-y">

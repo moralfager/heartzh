@@ -13,6 +13,9 @@ RUN npm ci
 # Копируем исходный код
 COPY . .
 
+# Генерируем Prisma Client
+RUN npx prisma generate
+
 # Собираем приложение
 RUN npm run build
 
@@ -30,6 +33,11 @@ RUN adduser --system --uid 1001 nextjs
 COPY --from=base /app/public ./public
 COPY --from=base /app/.next/standalone ./
 COPY --from=base /app/.next/static ./.next/static
+
+# Копируем Prisma
+COPY --from=base /app/node_modules/.prisma ./node_modules/.prisma
+COPY --from=base /app/node_modules/@prisma ./node_modules/@prisma
+COPY --from=base /app/prisma ./prisma
 
 # Устанавливаем права доступа
 RUN chown -R nextjs:nodejs /app

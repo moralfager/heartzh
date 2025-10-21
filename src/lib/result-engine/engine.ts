@@ -71,10 +71,15 @@ export function computeResult(input: ComputeResultInput): ResultSummary {
 
   // Шаг 3: Вычисление формул
   const formulaRules = input.rules.filter(r => r.kind === 'formula');
-  const compositeScores = applyFormulaRules(
-    formulaRules as any,
-    scaleScores
-  );
+  let compositeScores = {};
+  try {
+    compositeScores = applyFormulaRules(
+      formulaRules as any,
+      scaleScores
+    );
+  } catch (error) {
+    console.warn('[Engine] Formula rules error (skipping):', error);
+  }
 
   audit.push({
     step: 'formula_rules',
@@ -87,11 +92,16 @@ export function computeResult(input: ComputeResultInput): ResultSummary {
 
   // Шаг 4: Поиск паттернов
   const comboRules = input.rules.filter(r => r.kind === 'combo');
-  const patterns = applyComboRules(
-    comboRules as any,
-    scaleScores,
-    input.scales
-  );
+  let patterns = [];
+  try {
+    patterns = applyComboRules(
+      comboRules as any,
+      scaleScores,
+      input.scales
+    );
+  } catch (error) {
+    console.warn('[Engine] Combo rules error (skipping):', error);
+  }
 
   audit.push({
     step: 'combo_rules',

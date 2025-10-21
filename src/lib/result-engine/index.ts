@@ -21,6 +21,12 @@ export {
   applyComboRules,
 } from './rules';
 
+// Mappers
+export {
+  convertSessionAnswerToEngineAnswer,
+  convertSessionAnswersToEngineAnswers,
+} from './mappers';
+
 // Types
 export type {
   Scale,

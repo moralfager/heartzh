@@ -68,9 +68,15 @@ export function getScaleDetails(
  * Найти band (диапазон) для score
  */
 export function findBand(
-  bands: Array<{ to: number; label: string }>,
+  bands: Array<{ to: number; label: string }> | any,
   score: number
 ): { to: number; label: string } | undefined {
+  // Проверка что bands - массив (может быть JSON object из БД)
+  if (!bands || !Array.isArray(bands)) {
+    console.warn('[findBand] bands is not an array:', bands);
+    return undefined;
+  }
+
   // Сортируем bands по возрастанию
   const sorted = [...bands].sort((a, b) => a.to - b.to);
 

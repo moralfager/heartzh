@@ -44,6 +44,24 @@ export function RulesTab({ testId, onRefresh }: { testId: string; onRefresh?: ()
     }
   };
 
+  const handleDeleteAll = async () => {
+    if (!confirm(`Удалить ВСЕ ${rules.length} правил? Это действие необратимо!`)) return;
+    
+    try {
+      setIsLoading(true);
+      await Promise.all(
+        rules.map(rule => 
+          fetch(`/api/admin/tests/${testId}/rules/${rule.id}`, { method: 'DELETE' })
+        )
+      );
+      alert('✅ Все правила удалены');
+      loadRules();
+    } catch (error) {
+      alert('Ошибка удаления');
+      setIsLoading(false);
+    }
+  };
+
   const handleImport = async () => {
     try {
       const parsed = JSON.parse(importJson);
@@ -78,6 +96,15 @@ export function RulesTab({ testId, onRefresh }: { testId: string; onRefresh?: ()
           <p className="text-sm text-gray-500 mt-1">Всего: {rules.length}</p>
         </div>
         <div className="flex gap-3">
+          {rules.length > 0 && (
+            <button
+              onClick={handleDeleteAll}
+              className="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-xl flex items-center gap-2"
+            >
+              <Trash2 className="h-5 w-5" />
+              Удалить все
+            </button>
+          )}
           <button
             onClick={() => setIsImporting(!isImporting)}
             className="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-xl flex items-center gap-2"
