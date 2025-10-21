@@ -11,22 +11,15 @@ jobs:
     timeout-minutes: 30
 
     steps:
-      - name: Checkout (optional)
-        uses: actions/checkout@v4
-
-      - name: Add SSH key
-        uses: webfactory/ssh-agent@v0.9.0
+      - name: Deploy over SSH with retry
+        uses: appleboy/ssh-action@v1.0.3
         with:
-          ssh-private-key: ${{ secrets.SSH_KEY }}
-
-      - name: Deploy over SSH
-        run: |
-          ssh -o StrictHostKeyChecking=no \
-              -o ServerAliveInterval=60 \
-              -o ServerAliveCountMax=10 \
-              -o TCPKeepAlive=yes \
-              -p ${{ secrets.SSH_PORT || 22 }} \
-              ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          port: ${{ secrets.SSH_PORT || 22 }}
+          command_timeout: 30m
+          script: |
             set -e
             cd /var/www/heartzh
             git config --global --add safe.directory /var/www/heartzh
@@ -36,7 +29,7 @@ jobs:
             git reset --hard origin/prod
             
             echo "🛑 Stopping containers..."
-            docker compose -f docker-compose.prod.yml down
+            docker compose -f docker-compose.prod.yml down || true
             
             echo "🏗️ Building with cache (faster)..."
             docker compose -f docker-compose.prod.yml build
@@ -46,4 +39,3 @@ jobs:
             
             echo "✅ Deployment complete!"
             docker ps
-          EOF
