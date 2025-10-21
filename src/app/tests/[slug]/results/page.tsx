@@ -50,6 +50,9 @@ export default function ResultsPage({ params }: ResultsPageProps) {
       if (session && testData) {
         // Load answers from localStorage
         const savedAnswers = localStorage.getItem(`test-answers-${session}`);
+        console.log('🔍 Loading results for session:', session);
+        console.log('📦 Saved answers in localStorage:', savedAnswers ? 'Found' : 'Not found');
+        
         if (savedAnswers) {
           const answers: SessionAnswer[] = JSON.parse(savedAnswers);
           
