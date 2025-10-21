@@ -20,6 +20,7 @@ export interface ScaleBand {
   label: string;        // метка (low, mid, high)
   title?: string;       // заголовок интерпретации
   description?: string; // описание
+  recommendations?: string[]; // рекомендации
 }
 
 // ============================================================================
@@ -38,13 +39,21 @@ export interface ThresholdRule extends BaseRule {
   kind: 'threshold';
   payload: {
     scaleKey: string;   // к какой шкале применяется
-    ranges: {
+    ranges?: {
       to: number;       // верхняя граница
       label: string;    // метка
       title?: string;   // заголовок
       description?: string;
       recommendations?: string[];
     }[];
+    // ChatGPT format support
+    threshold?: number;
+    operator?: string;
+    interpretation?: {
+      summaryType?: string;
+      summary?: string;
+      tips?: string[];
+    };
   };
 }
 
@@ -87,7 +96,7 @@ export type Rule = ThresholdRule | FormulaRule | ComboRule;
 
 export interface Answer {
   questionId: string;
-  value: string | number; // значение ответа
+  value: string | number | string[]; // значение ответа (может быть массив для multi-select)
   weights: Record<string, number>; // веса по шкалам
   timestamp?: Date;
 }

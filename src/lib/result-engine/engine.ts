@@ -92,7 +92,7 @@ export function computeResult(input: ComputeResultInput): ResultSummary {
 
   // Шаг 4: Поиск паттернов
   const comboRules = input.rules.filter(r => r.kind === 'combo');
-  let patterns = [];
+  let patterns: any[] = [];
   try {
     patterns = applyComboRules(
       comboRules as any,

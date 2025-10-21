@@ -244,7 +244,7 @@ export async function importTests(
 
   for (const testData of tests) {
     const result = await importTest(testData, {
-      externalId: testData.slug,
+      externalId: testData.meta?.slug,
       forceUpdate: options.forceUpdate,
     });
 

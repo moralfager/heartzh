@@ -161,7 +161,7 @@ export function applyFormulaRules(
 
     // Определяем label если есть ranges
     let label: string | undefined;
-    let rangeData: typeof ranges[0] | undefined;
+    let rangeData: { to: number; label: string; title?: string; description?: string; } | undefined;
 
     if (ranges && ranges.length > 0) {
       rangeData = findBand(ranges, value);
