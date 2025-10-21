@@ -246,6 +246,7 @@ export function QuestionsTab({ testId, onRefresh }: QuestionsTabProps) {
     }
 
     // Optimistic update
+    const oldQuestions = [...localQuestions];
     const newQuestions = arrayMove(localQuestions, oldIndex, newIndex);
     setLocalQuestions(newQuestions);
 
@@ -263,12 +264,12 @@ export function QuestionsTab({ testId, onRefresh }: QuestionsTabProps) {
 
       if (!response.ok) {
         // Revert on error
-        setLocalQuestions(questions);
+        setLocalQuestions(oldQuestions);
         alert('Ошибка при изменении порядка вопросов');
       }
     } catch (error) {
       console.error('Error reordering questions:', error);
-      setLocalQuestions(questions);
+      setLocalQuestions(oldQuestions);
       alert('Ошибка при изменении порядка вопросов');
     } finally {
       setIsSaving(false);
@@ -344,11 +345,11 @@ export function QuestionsTab({ testId, onRefresh }: QuestionsTabProps) {
             Вопросы теста
           </h2>
           <p className="text-sm text-gray-500 mt-1">
-            Всего вопросов: {questions.length}
+            Всего вопросов: {localQuestions.length}
           </p>
         </div>
         <div className="flex gap-3">
-          {questions.length > 0 && (
+          {localQuestions.length > 0 && (
             <button
               onClick={handleExportForAI}
               className="inline-flex items-center px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-xl transition-colors font-medium"
