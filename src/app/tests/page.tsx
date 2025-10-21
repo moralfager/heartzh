@@ -5,23 +5,28 @@ import { TestMeta } from "@/lib/types";
 // Get tests from API (database)
 async function getTests(): Promise<TestMeta[]> {
   try {
+    console.log('🔍 Fetching tests from API...');
     // Use relative URL to work both in build and runtime behind proxy
     const response = await fetch(`/api/admin/tests`, {
-      // reduce caching to surface new imports quickly
-      next: { revalidate: 10 },
-      // ensure we always hit server on each request in prod if needed
-      cache: 'no-store',
+      // Short cache to surface new imports quickly
+      next: { revalidate: 5 },
     });
 
+    console.log('📡 Response status:', response.status);
+    
     if (!response.ok) {
+      console.error('❌ API response not OK:', response.status, response.statusText);
       return [];
     }
 
     const data = await response.json();
+    console.log('📊 API response data:', data);
     const tests = data.tests || [];
     
+    console.log(`✅ Found ${tests.length} tests from API`);
+    
     // Transform to TestMeta format and filter only published tests
-    return tests
+    const publishedTests = tests
       .filter((test: any) => test.published)
       .map((test: any) => ({
         id: test.id,
@@ -36,14 +41,20 @@ async function getTests(): Promise<TestMeta[]> {
         languages: ['ru'],
         rating: test.rating || 4.8,
       }));
+    
+    console.log(`🚀 Returning ${publishedTests.length} published tests`);
+    return publishedTests;
   } catch (error) {
-    console.error('Error fetching tests:', error);
+    console.error('❌ Error fetching tests:', error);
     return [];
   }
 }
 
 export default async function TestsPage() {
   const tests = await getTests();
+  
+  console.log(`🎯 TestsPage: received ${tests.length} tests`);
+  
   return (
     <div className="min-h-screen gradient-bg">
       {/* Header */}
@@ -72,6 +83,10 @@ export default async function TestsPage() {
           </h1>
           <p className="text-xl text-gray-600 max-w-2xl mx-auto">
             Выберите тест, который поможет вам лучше понять себя и свои отношения
+          </p>
+          {/* Debug info */}
+          <p className="text-sm text-gray-500 mt-2">
+            Найдено тестов: {tests.length}
           </p>
         </div>
 
