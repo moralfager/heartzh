@@ -11,7 +11,7 @@ async function getTests(): Promise<TestMeta[]> {
     console.log('🔍 Fetching tests from API...');
     
     // Build absolute URL for fetch
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://heartofzha.ru';
     const apiUrl = `${baseUrl}/api/admin/tests`;
     
     console.log('🌐 Fetching from:', apiUrl);

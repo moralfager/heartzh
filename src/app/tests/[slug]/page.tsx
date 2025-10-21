@@ -6,7 +6,7 @@ import { TestDefinition } from "@/lib/types";
 // Get test data from API (database)
 async function getTest(slug: string): Promise<{ test: TestDefinition | null; published: boolean }> {
   try {
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://heartofzha.ru';
     const response = await fetch(`${baseUrl}/api/tests/${slug}?checkPublished=true`, {
       next: { revalidate: 60 }, // Cache for 60 seconds
     });
