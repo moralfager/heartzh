@@ -1,25 +1,7 @@
-version: '3.8'
-
 services:
-  # MySQL Database
-  mysql:
-    image: mysql:8.0
-    environment:
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-      MYSQL_DATABASE: psychotest_production
-      MYSQL_USER: psychotest_user
-      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
-    volumes:
-      - mysql_data:/var/lib/mysql
-    ports:
-      - "3306:3306"
-    restart: unless-stopped
-    healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${MYSQL_ROOT_PASSWORD}"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-      start_period: 30s
+  # MySQL на сервере уже установлена (не запускаем в Docker)
+  # В .env используйте: DATABASE_URL="mysql://user:password@172.17.0.1:3306/psychotest_production"
+  # 172.17.0.1 - это IP хоста из Docker контейнера
 
   # Основное приложение
   psychotest:
@@ -31,9 +13,8 @@ services:
     environment:
       - NODE_ENV=production
       - PORT=3000
-    depends_on:
-      mysql:
-        condition: service_healthy
+    extra_hosts:
+      - "host.docker.internal:host-gateway"  # Доступ к MySQL на хосте
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://127.0.0.1:3000"]
@@ -67,6 +48,5 @@ services:
     restart: unless-stopped
 
 volumes:
-  mysql_data:
   letsencrypt:
   certbot-webroot:
