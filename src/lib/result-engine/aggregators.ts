@@ -67,10 +67,10 @@ export function getScaleDetails(
 /**
  * Найти band (диапазон) для score
  */
-export function findBand(
-  bands: Array<{ to: number; label: string }> | any,
+export function findBand<T extends { to: number; label: string }>(
+  bands: T[] | any,
   score: number
-): { to: number; label: string } | undefined {
+): T | undefined {
   // Проверка что bands - массив (может быть JSON object из БД)
   if (!bands || !Array.isArray(bands)) {
     console.warn('[findBand] bands is not an array:', bands);

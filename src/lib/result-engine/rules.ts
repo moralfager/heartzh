@@ -44,7 +44,18 @@ export function applyThresholdRules(
     
     if (payload.ranges) {
       // Формат 1: DSL с ranges
-      const range = findBand(payload.ranges, score);
+      type RangeType = {
+        to: number;
+        label: string;
+        title?: string;
+        description?: string;
+        recommendations?: string[];
+      };
+      
+      const range = findBand<RangeType>(
+        payload.ranges as RangeType[],
+        score
+      );
 
       if (!range) {
         console.warn(`[ThresholdRule] No range found for score ${score} in scale ${scaleKey}`);
