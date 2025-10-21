@@ -5,9 +5,12 @@ import { TestMeta } from "@/lib/types";
 // Get tests from API (database)
 async function getTests(): Promise<TestMeta[]> {
   try {
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
-    const response = await fetch(`${baseUrl}/api/admin/tests`, {
-      next: { revalidate: 60 }, // Cache for 60 seconds
+    // Use relative URL to work both in build and runtime behind proxy
+    const response = await fetch(`/api/admin/tests`, {
+      // reduce caching to surface new imports quickly
+      next: { revalidate: 10 },
+      // ensure we always hit server on each request in prod if needed
+      cache: 'no-store',
     });
 
     if (!response.ok) {
