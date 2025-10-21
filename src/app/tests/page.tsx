@@ -2,12 +2,21 @@ import Link from "next/link";
 import { Heart, Star, Clock, Search, Filter } from "lucide-react";
 import { TestMeta } from "@/lib/types";
 
+// Force dynamic rendering to avoid build-time fetch issues
+export const dynamic = 'force-dynamic';
+
 // Get tests from API (database)
 async function getTests(): Promise<TestMeta[]> {
   try {
     console.log('🔍 Fetching tests from API...');
-    // Use relative URL to work both in build and runtime behind proxy
-    const response = await fetch(`/api/admin/tests`, {
+    
+    // Build absolute URL for fetch
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
+    const apiUrl = `${baseUrl}/api/admin/tests`;
+    
+    console.log('🌐 Fetching from:', apiUrl);
+    
+    const response = await fetch(apiUrl, {
       // Short cache to surface new imports quickly
       next: { revalidate: 5 },
     });
