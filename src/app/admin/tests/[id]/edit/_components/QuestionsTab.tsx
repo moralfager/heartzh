@@ -227,7 +227,8 @@ export function QuestionsTab({ testId, onRefresh }: QuestionsTabProps) {
   };
 
   const handleEditorSave = () => {
-    onRefresh();
+    loadQuestions();
+    onRefresh?.();
   };
 
   const handleDragEnd = async (event: DragEndEvent) => {
@@ -286,7 +287,8 @@ export function QuestionsTab({ testId, onRefresh }: QuestionsTabProps) {
 
       if (response.ok) {
         alert('Вопрос удалён');
-        onRefresh();
+        loadQuestions();
+        onRefresh?.();
       } else {
         alert('Ошибка при удалении вопроса');
       }
