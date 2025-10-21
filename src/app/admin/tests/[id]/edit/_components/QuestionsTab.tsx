@@ -38,8 +38,7 @@ interface Question {
 
 interface QuestionsTabProps {
   testId: string;
-  questions: Question[];
-  onRefresh: () => void;
+  onRefresh?: () => void;
 }
 
 // Sortable Question Item Component
@@ -177,8 +176,8 @@ function SortableQuestionItem({
   );
 }
 
-export function QuestionsTab({ testId, questions, onRefresh }: QuestionsTabProps) {
-  const [localQuestions, setLocalQuestions] = useState<Question[]>(questions);
+export function QuestionsTab({ testId, onRefresh }: QuestionsTabProps) {
+  const [localQuestions, setLocalQuestions] = useState<Question[]>([]);
   const [expandedQuestion, setExpandedQuestion] = useState<string | null>(null);
   const [editingQuestion, setEditingQuestion] = useState<Question | null>(null);
   const [isEditorOpen, setIsEditorOpen] = useState(false);
@@ -193,8 +192,20 @@ export function QuestionsTab({ testId, questions, onRefresh }: QuestionsTabProps
 
   // Sync local state with props
   useEffect(() => {
-    setLocalQuestions(questions);
-  }, [questions]);
+    loadQuestions();
+  }, [testId]);
+
+  const loadQuestions = async () => {
+    try {
+      const res = await fetch(`/api/admin/tests/${testId}/questions`);
+      if (res.ok) {
+        const data = await res.json();
+        setLocalQuestions(data);
+      }
+    } catch (error) {
+      console.error('Error loading questions:', error);
+    }
+  };
 
   const toggleExpand = (questionId: string) => {
     setExpandedQuestion(prev => prev === questionId ? null : questionId);

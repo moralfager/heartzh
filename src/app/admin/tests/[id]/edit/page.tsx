@@ -429,7 +429,6 @@ export default function EditTestPage({
       {activeTab === 'questions' && (
         <QuestionsTab
           testId={test.id}
-          questions={test.questions || []}
           onRefresh={loadTest}
         />
       )}
