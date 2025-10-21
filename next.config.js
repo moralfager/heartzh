@@ -10,7 +10,14 @@ const nextConfig = {
   // Docker оптимизации
   compress: true,
   poweredByHeader: false,
-  generateEtags: false
+  generateEtags: false,
+  // Отключаем ESLint при production build (уже проверено в dev)
+  eslint: {
+    ignoreDuringBuilds: true
+  },
+  typescript: {
+    ignoreBuildErrors: false
+  }
 }
 
 module.exports = nextConfig
