@@ -10,7 +10,8 @@ import { generateSessionId } from "@/lib/utils";
 // Get test data from API (database)
 async function getTest(slug: string): Promise<TestDefinition | null> {
   try {
-    const response = await fetch(`http://localhost:3000/api/tests/${slug}`, {
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || window.location.origin;
+    const response = await fetch(`${baseUrl}/api/tests/${slug}`, {
       cache: 'no-store', // Don't cache during test taking
     });
 
