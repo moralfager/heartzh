@@ -31,7 +31,7 @@ $SSH_HOST = if ($env:SSH_HOST) { $env:SSH_HOST } else { "85.202.192.68" }
 $SSH_PORT = if ($env:SSH_PORT) { $env:SSH_PORT } else { "22" }
 
 Write-Host ""
-Write-Host "🔐 Connecting to $SSH_USER@$SSH_HOST:$SSH_PORT..." -ForegroundColor Yellow
+Write-Host "🔐 Connecting to ${SSH_USER}@${SSH_HOST} on port ${SSH_PORT}..." -ForegroundColor Yellow
 Write-Host ""
 
 # Деплой команды
