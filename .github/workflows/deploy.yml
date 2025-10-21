@@ -1,9 +1,12 @@
 name: Deploy to VPS (prod branch)
 
+# TEMPORARILY DISABLED: SSH connections from GitHub Actions are blocked by server
+# Use manual deploy script instead: .\deploy-manual.ps1
+
 on:
-  push:
-    branches: [ "prod" ]   # деплой только из prod
-  workflow_dispatch:
+  # push:
+  #   branches: [ "prod" ]
+  workflow_dispatch:  # Manual trigger only
 
 jobs:
   deploy:
