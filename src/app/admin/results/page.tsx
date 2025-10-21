@@ -3,7 +3,6 @@
 import { useState, useEffect } from "react";
 import { Download, Eye, MessageSquare, Trash2 } from "lucide-react";
 import ClearResultsModal from "@/components/ClearResultsModal";
-import { getStoredTestResults, clearStoredTestResults } from "@/lib/dataStorage";
 
 interface UserAnswer {
   questionId: string;
@@ -57,35 +56,56 @@ export default function AdminResultsPage() {
     loadResults();
   }, []);
 
-  const loadResults = () => {
+  const loadResults = async () => {
     try {
-      const storedResults = getStoredTestResults();
+      console.log('🔍 Loading results from API...');
+      const response = await fetch('/api/internal/results', {
+        cache: 'no-store',
+      });
       
-      const adminResults: AdminResult[] = storedResults.map(result => ({
-        sessionId: result.sessionId,
+      if (!response.ok) {
+        console.error('❌ API response not OK:', response.status);
+        setIsLoading(false);
+        return;
+      }
+      
+      const data = await response.json();
+      console.log('📊 Results from API:', data);
+      
+      const apiResults = data.results || [];
+      
+      const adminResults: AdminResult[] = apiResults.map((result: any) => ({
+        sessionId: result.sessionId || result.id,
         testId: result.testId,
-        completedAt: result.completedAt,
-        summaryType: result.results.summaryType,
-        answers: result.answers,
-        attachment: result.results.attachment || { secure: 0, anxious: 0, avoidant: 0 },
-        values: result.results.values || { support: 0, passion: 0, security: 0, growth: 0 },
-        loveLanguage: result.results.loveLanguage || { words: 0, time: 0, gifts: 0, service: 0, touch: 0 },
-        conflict: result.results.conflict || { collab: 0, comprom: 0, avoid: 0, accom: 0, compete: 0 }
+        completedAt: result.createdAt,
+        summaryType: result.summary?.summaryType || 'Неизвестно',
+        answers: Object.entries(result.answers || {}).map(([questionId, answer]: [string, any]) => ({
+          questionId,
+          questionText: answer.questionText || '',
+          block: answer.block || 1,
+          answer: answer.value,
+          timestamp: answer.timestamp || Date.now(),
+        })),
+        attachment: result.summary?.attachment || { secure: 0, anxious: 0, avoidant: 0 },
+        values: result.summary?.values || { support: 0, passion: 0, security: 0, growth: 0 },
+        loveLanguage: result.summary?.loveLanguage || { words: 0, time: 0, gifts: 0, service: 0, touch: 0 },
+        conflict: result.summary?.conflict || { collab: 0, comprom: 0, avoid: 0, accom: 0, compete: 0 }
       }));
       
+      console.log('✅ Processed results:', adminResults);
       setResults(adminResults);
       setIsLoading(false);
     } catch (error) {
-      console.error('Error loading data:', error);
+      console.error('❌ Error loading results from API:', error);
       setIsLoading(false);
     }
   };
 
-  const clearAllResults = () => {
-    clearStoredTestResults();
-    setResults([]);
-    setSelectedResult(null);
-    setShowAnswers(false);
+  const clearAllResults = async () => {
+    // TODO: Implement API endpoint to delete all results
+    console.warn('Clear all results not implemented yet');
+    alert('Функция очистки всех результатов будет доступна в следующей версии');
+    setShowClearModal(false);
   };
 
   const exportToCSV = () => {
