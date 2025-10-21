@@ -31,6 +31,15 @@ jobs:
             echo "🛑 Stopping containers..."
             docker compose -f docker-compose.prod.yml down || true
             
+            echo "🧹 Cleaning up processes on port 3000..."
+            sudo pkill -f next-server || true
+            sudo pkill -f node || true
+            pm2 stop all || true
+            pm2 delete all || true
+            
+            echo "⏳ Waiting for port to be freed..."
+            sleep 3
+            
             echo "🏗️ Building with cache (faster)..."
             docker compose -f docker-compose.prod.yml build
             
