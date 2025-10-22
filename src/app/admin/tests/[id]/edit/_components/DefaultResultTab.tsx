@@ -67,13 +67,15 @@ export function DefaultResultTab({ testId }: { testId: string }) {
         setData({
           summaryType: result.summaryType,
           summary: result.summary,
-          recommendations: result.recommendations || [],
+          recommendations: Array.isArray(result.recommendations) ? result.recommendations : [],
           scalesData: result.scalesData
         });
         setJsonInput(JSON.stringify(result.scalesData, null, 2));
-      } else {
+      } else if (response.status === 404) {
         // No default result yet, use initial state
         setJsonInput(JSON.stringify(data.scalesData, null, 2));
+      } else {
+        console.error('Failed to load default result:', response.status);
       }
     } catch (error) {
       console.error('Error loading default result:', error);
