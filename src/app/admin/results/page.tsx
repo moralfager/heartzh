@@ -58,8 +58,8 @@ export default function AdminResultsPage() {
 
   const loadResults = async () => {
     try {
-      console.log('🔍 Loading results from API...');
-      const response = await fetch('/api/internal/results', {
+      console.log('🔍 Loading ALL results from API for admin...');
+      const response = await fetch('/api/admin/results', {
         cache: 'no-store',
       });
       
@@ -75,24 +75,27 @@ export default function AdminResultsPage() {
       const apiResults = data.results || [];
       
       const adminResults: AdminResult[] = apiResults.map((result: any) => ({
-        sessionId: result.sessionId || result.id,
+        sessionId: result.sessionId,
         testId: result.testId,
         completedAt: result.createdAt,
         summaryType: result.summary?.summaryType || 'Неизвестно',
-        answers: Object.entries(result.answers || {}).map(([questionId, answer]: [string, any]) => ({
-          questionId,
-          questionText: answer.questionText || '',
-          block: answer.block || 1,
-          answer: answer.value,
-          timestamp: answer.timestamp || Date.now(),
-        })),
+        answers: result.detail?.answers 
+          ? Object.entries(result.detail.answers).map(([questionId, answer]: [string, any]) => ({
+              questionId,
+              questionText: answer.questionText || `Вопрос ${questionId}`,
+              block: answer.block || 1,
+              answer: answer.answer || answer.value || answer,
+              timestamp: answer.timestamp || Date.now(),
+            }))
+          : [],
         attachment: result.summary?.attachment || { secure: 0, anxious: 0, avoidant: 0 },
         values: result.summary?.values || { support: 0, passion: 0, security: 0, growth: 0 },
         loveLanguage: result.summary?.loveLanguage || { words: 0, time: 0, gifts: 0, service: 0, touch: 0 },
         conflict: result.summary?.conflict || { collab: 0, comprom: 0, avoid: 0, accom: 0, compete: 0 }
       }));
       
-      console.log('✅ Processed results:', adminResults);
+      console.log('✅ Processed admin results:', adminResults);
+      console.log('📋 Sample answers:', adminResults[0]?.answers);
       setResults(adminResults);
       setIsLoading(false);
     } catch (error) {
