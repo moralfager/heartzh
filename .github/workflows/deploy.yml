@@ -43,7 +43,7 @@ jobs:
             
             echo ""
             echo "🔄 Updating database schema..."
-            docker exec psychotest-psychotest-1 npx prisma db push || echo "⚠️ Schema update failed (may be already up-to-date)"
+            docker exec heartzh-psychotest-1 npx prisma db push --skip-generate || echo "⚠️ Schema update failed (may be already up-to-date)"
             
             echo ""
             echo "✅ Deployment complete!"
