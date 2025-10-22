@@ -61,14 +61,17 @@ export default function ResultsPage({ params }: ResultsPageProps) {
           // Check result mode
           if (testData.resultMode === 'default' && testData.defaultResult) {
             // Use default result
+            console.log('📋 Using default result:', testData.defaultResult);
             profile = {
               ...testData.defaultResult.scalesData,
               summaryType: testData.defaultResult.summaryType,
               summary: testData.defaultResult.summary,
-              tips: [
-                "Это фиксированный результат по умолчанию",
-                "Администратор может настроить его во вкладке 'Результат по умолчанию'"
-              ],
+              tips: Array.isArray(testData.defaultResult.recommendations) 
+                ? testData.defaultResult.recommendations 
+                : [
+                    "Это фиксированный результат по умолчанию",
+                    "Администратор может настроить его во вкладке 'Результат по умолчанию'"
+                  ],
             };
           } else if (testData.scales && testData.scales.length > 0 && testData.rules && testData.rules.length > 0) {
             // Use Result Engine
