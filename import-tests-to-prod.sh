@@ -23,3 +23,7 @@ echo "Проверьте:"
 echo "  - Админка: https://heartofzha.ru/admin/tests"
 echo "  - Тесты: https://heartofzha.ru/tests"
 
+
+
+
+

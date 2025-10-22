@@ -6,6 +6,7 @@ import { Save, FileJson, AlertCircle, CheckCircle } from "lucide-react";
 interface DefaultResultData {
   summaryType: string;
   summary: string;
+  recommendations: string[];
   scalesData: Record<string, any>;
 }
 
@@ -13,6 +14,11 @@ export function DefaultResultTab({ testId }: { testId: string }) {
   const [data, setData] = useState<DefaultResultData>({
     summaryType: "Страстный Служебный",
     summary: "Ты — избегающий партнёр. Для тебя важны страсть и безопасность, а говорить о чувствах легче через заботу делами. В конфликтах ты стремишься к сотрудничество, что помогает находить баланс в отношениях.",
+    recommendations: [
+      "Развивай навыки вербального выражения чувств",
+      "Работай над созданием безопасного пространства в отношениях",
+      "Учись принимать уязвимость как силу, а не слабость"
+    ],
     scalesData: {
       attachment: {
         secure: -25,
@@ -61,6 +67,7 @@ export function DefaultResultTab({ testId }: { testId: string }) {
         setData({
           summaryType: result.summaryType,
           summary: result.summary,
+          recommendations: result.recommendations || [],
           scalesData: result.scalesData
         });
         setJsonInput(JSON.stringify(result.scalesData, null, 2));
@@ -163,6 +170,49 @@ export function DefaultResultTab({ testId }: { testId: string }) {
           className="w-full px-4 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-pink-500 focus:border-pink-500"
           placeholder="Основное описание результата..."
         />
+      </div>
+
+      {/* Recommendations */}
+      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+        <h3 className="text-lg font-semibold text-gray-800 mb-4">Персональные рекомендации</h3>
+        <div className="space-y-3">
+          {data.recommendations.map((rec, index) => (
+            <div key={index} className="flex items-start space-x-2">
+              <span className="text-pink-500 font-bold mt-2">•</span>
+              <textarea
+                value={rec}
+                onChange={(e) => {
+                  const newRecs = [...data.recommendations];
+                  newRecs[index] = e.target.value;
+                  setData({ ...data, recommendations: newRecs });
+                }}
+                rows={2}
+                className="flex-1 px-4 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-pink-500 focus:border-pink-500"
+                placeholder={`Рекомендация ${index + 1}...`}
+              />
+              <button
+                onClick={() => {
+                  const newRecs = data.recommendations.filter((_, i) => i !== index);
+                  setData({ ...data, recommendations: newRecs });
+                }}
+                className="px-3 py-2 bg-red-100 hover:bg-red-200 text-red-700 rounded-lg transition-colors text-sm font-medium"
+              >
+                Удалить
+              </button>
+            </div>
+          ))}
+          <button
+            onClick={() => {
+              setData({ 
+                ...data, 
+                recommendations: [...data.recommendations, ""] 
+              });
+            }}
+            className="w-full px-4 py-2 bg-green-100 hover:bg-green-200 text-green-700 rounded-xl transition-colors font-medium"
+          >
+            + Добавить рекомендацию
+          </button>
+        </div>
       </div>
 
       {/* Scales Data */}

@@ -8,6 +8,7 @@ import { z } from 'zod';
 const DefaultResultSchema = z.object({
   summaryType: z.string().min(1).max(255),
   summary: z.string().min(1),
+  recommendations: z.array(z.string()).default([]),
   scalesData: z.record(z.any()), // JSON with all scales
 });
 
@@ -64,12 +65,14 @@ export async function PUT(
       update: {
         summaryType: validated.summaryType,
         summary: validated.summary,
+        recommendations: validated.recommendations,
         scalesData: validated.scalesData,
       },
       create: {
         testId: id,
         summaryType: validated.summaryType,
         summary: validated.summary,
+        recommendations: validated.recommendations,
         scalesData: validated.scalesData,
       },
     });
