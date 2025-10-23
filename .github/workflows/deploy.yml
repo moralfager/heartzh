@@ -14,11 +14,12 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          fetch-depth: 1
+          fetch-depth: 0
 
       - name: Create deploy archive
         run: |
-          tar --exclude='.git' --exclude='node_modules' -czf release.tar.gz .
+          # Create a deterministic archive from tracked files to avoid 'file changed as we read it'
+          git archive -o release.tar.gz HEAD
 
       - name: Upload archive to VPS
         uses: appleboy/scp-action@v0.1.7
