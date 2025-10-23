@@ -6,7 +6,8 @@ WORKDIR /app
 
 # Install dependencies based on the package manager
 COPY package.json package-lock.json* ./
-RUN npm ci --only=production && npm cache clean --force
+# Install all deps but skip postinstall scripts (prisma generate will run in builder stage)
+RUN npm ci --ignore-scripts && npm cache clean --force
 
 # ================================
 # Builder Stage
