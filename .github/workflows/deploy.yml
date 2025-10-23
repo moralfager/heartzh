@@ -18,18 +18,30 @@ jobs:
 
       - name: Create deploy archive
         run: |
-          # Create a deterministic archive from tracked files to avoid 'file changed as we read it'
           git archive -o release.tar.gz HEAD
 
-      - name: Upload archive to VPS
-        uses: appleboy/scp-action@v0.1.7
+      - name: Prepare release directory on VPS
+        uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_KEY }}
           port: ${{ secrets.SSH_PORT || 22 }}
-          source: "release.tar.gz"
-          target: "/var/www/heartzh/releases/${{ github.sha }}/"
+          envs: GITHUB_SHA
+          script: |
+            set -e
+            mkdir -p /var/www/heartzh/releases/${GITHUB_SHA}
+
+      - name: Upload archive via rsync
+        uses: burnett01/rsync-deployments@7.0.1
+        with:
+          switches: -avz --progress
+          path: release.tar.gz
+          remote_path: /var/www/heartzh/releases/${{ github.sha }}/
+          remote_host: ${{ secrets.SSH_HOST }}
+          remote_user: ${{ secrets.SSH_USER }}
+          remote_key: ${{ secrets.SSH_KEY }}
+          remote_port: ${{ secrets.SSH_PORT || 22 }}
 
       - name: Deploy over SSH
         uses: appleboy/ssh-action@v1.0.3
