@@ -80,7 +80,14 @@ docker-compose -f docker-compose.prod.yml up -d --build
 
 ## ⚠️ Important: Before Deploy
 
-1. **You'll need to create `.env.production` on the server**
+### Первый деплой на чистый сервер (без SSL)
+
+**Текущая конфигурация:** HTTP-only (без HTTPS)
+- Использует: `nginx-http-only.conf`
+- Работает на: http://heartofzha.ru (БЕЗ https)
+- SSL настраивается ПОСЛЕ успешного деплоя
+
+1. **Создай `.env.production` на сервере**
    - Copy from: `env.production.template`
    - Change ALL passwords!
    - File location: `/root/psychotest/.env.production`
@@ -91,6 +98,11 @@ docker-compose -f docker-compose.prod.yml up -d --build
    - `DATABASE_URL` - Update with same password
    - `ADMIN_PASSWORD` - Admin panel password
    - `SESSION_SECRET` - Random long string
+
+3. **После успешного деплоя:**
+   - Проверь: http://heartofzha.ru (работает без HTTPS)
+   - Настрой SSL: следуй инструкциям в `SETUP-SSL.md`
+   - Получишь HTTPS: https://heartofzha.ru 🔒
 
 ## 🎬 Deployment Steps
 
