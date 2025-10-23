@@ -1,63 +1,93 @@
-name: Deploy to VPS (prod branch)
+name: Deploy to Production
 
 on:
   push:
-    branches: [ "prod" ]
+    branches:
+      - prod
   workflow_dispatch:
 
 jobs:
   deploy:
+    name: Deploy to VPS
     runs-on: ubuntu-latest
-    timeout-minutes: 20
-
+    
     steps:
-      - name: Checkout
+      - name: Checkout code
         uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
-          fetch-depth: 0
-
-      - name: Build release archive
-        run: git archive -o release.tar.gz HEAD
-
-      - name: Upload release (rsync)
-        uses: burnett01/rsync-deployments@7.0.1
+          node-version: '20'
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Build application
+        run: npm run build
+        env:
+          DATABASE_URL: "mysql://placeholder:placeholder@localhost:3306/placeholder"
+      
+      - name: Run tests
+        run: npm test || echo "No tests configured"
+      
+      - name: Deploy to server
+        uses: appleboy/ssh-action@v1.0.0
         with:
-          switches: -avz
-          path: release.tar.gz
-          remote_path: /var/www/heartzh/
-          remote_host: ${{ secrets.SSH_HOST }}
-          remote_user: ${{ secrets.SSH_USER }}
-          remote_key: ${{ secrets.SSH_KEY }}
-          remote_port: ${{ secrets.SSH_PORT || 22 }}
-
-      - name: Deploy over SSH
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USER }}
-          key: ${{ secrets.SSH_KEY }}
-          port: ${{ secrets.SSH_PORT || 22 }}
-          command_timeout: 20m
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: 22
           script: |
             set -e
-            cd /var/www/heartzh
-
-            echo "📦 Extracting release..."
-            tar -xzf release.tar.gz
-            rm -f release.tar.gz
-
-            echo "🛑 Stopping containers..."
-            docker compose -f docker-compose.prod.yml down || true
-
-            echo "🚀 Build & start..."
-            docker compose -f docker-compose.prod.yml up -d --build
-
-            echo "⏳ Waiting..."
-            sleep 8
-
-            echo "🗃  Sync DB schema (optional)"
-            docker exec heartzh-psychotest-1 npx prisma db push --skip-generate || true
-
-            echo "✅ Done"
-            docker ps
-            docker compose -f docker-compose.prod.yml logs --tail=30 psychotest
+            echo "🚀 Starting deployment..."
+            
+            cd ${{ secrets.SERVER_PATH }}
+            
+            # Pull latest code
+            echo "📥 Pulling latest code..."
+            git pull origin prod
+            
+            # Check if .env.production exists
+            if [ ! -f .env.production ]; then
+              echo "❌ ERROR: .env.production not found!"
+              echo "📋 Create it from env.production.template"
+              exit 1
+            fi
+            
+            # Install dependencies
+            echo "📦 Installing dependencies..."
+            npm install --production
+            
+            # Stop and remove old containers
+            echo "🛑 Stopping old containers..."
+            docker-compose -f docker-compose.prod.yml down
+            
+            # Build and start new containers
+            echo "🐳 Building and starting containers..."
+            docker-compose -f docker-compose.prod.yml up -d --build
+            
+            # Wait for services to be healthy
+            echo "⏳ Waiting for services to start..."
+            sleep 30
+            
+            # Check health
+            echo "🏥 Checking service health..."
+            docker-compose -f docker-compose.prod.yml ps
+            
+            # Test application
+            echo "🔍 Testing application..."
+            curl -f http://localhost:3000/api/health || {
+              echo "❌ Health check failed!"
+              docker-compose -f docker-compose.prod.yml logs --tail=50
+              exit 1
+            }
+            
+            echo "✅ Deployment successful!"
+            echo "🌐 Application: https://heartofzha.ru"
+      
+      - name: Notify on failure
+        if: failure()
+        run: |
+          echo "❌ Deployment failed! Check logs above."

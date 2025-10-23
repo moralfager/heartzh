@@ -11,18 +11,33 @@ import { generateSessionId } from "@/lib/utils";
 async function getTest(slug: string): Promise<TestDefinition | null> {
   try {
     const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || window.location.origin;
+    console.log('🔍 Fetching test from:', `${baseUrl}/api/tests/${slug}`);
+    
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
+    
     const response = await fetch(`${baseUrl}/api/tests/${slug}`, {
-      cache: 'no-store', // Don't cache during test taking
+      cache: 'force-cache', // Use cache for better performance
+      next: { revalidate: 60 }, // Revalidate every 60 seconds
+      signal: controller.signal,
     });
+    
+    clearTimeout(timeoutId);
 
     if (!response.ok) {
+      console.error('❌ API response not OK:', response.status);
       return null;
     }
 
     const testData = await response.json();
+    console.log('✅ Test loaded:', testData.meta.title);
     return testData as TestDefinition;
   } catch (error) {
-    console.error('Error fetching test:', error);
+    if (error instanceof Error && error.name === 'AbortError') {
+      console.error('❌ Request timeout - server not responding');
+    } else {
+      console.error('❌ Error fetching test:', error);
+    }
     return null;
   }
 }
@@ -42,39 +57,49 @@ export default function TestTakingPage({ params }: TestTakingPageProps) {
   const [slug, setSlug] = useState<string>("");
 
   useEffect(() => {
+    let mounted = true;
+    
     const loadTest = async () => {
-      const { slug: currentSlug } = await params;
-      setSlug(currentSlug);
-      const testData = await getTest(currentSlug);
-      
-      if (!testData) {
-        // Redirect to test page if test not found or unpublished
-        router.push(`/tests/${currentSlug}`);
-        return;
-      }
-      
-      setTest(testData);
-      
-      // Generate or retrieve session ID
-      const existingSessionId = localStorage.getItem(`test-session-${currentSlug}`);
-      if (existingSessionId) {
-        setSessionId(existingSessionId);
-        // Load existing answers
-        const savedAnswers = localStorage.getItem(`test-answers-${existingSessionId}`);
-        if (savedAnswers) {
-          setAnswers(JSON.parse(savedAnswers));
+      try {
+        const { slug: currentSlug } = await params;
+        
+        if (!mounted) return;
+        
+        setSlug(currentSlug);
+        console.log('🔍 Loading test:', currentSlug);
+        
+        const testData = await getTest(currentSlug);
+        
+        if (!mounted) return;
+        
+        if (!testData) {
+          console.error('❌ Test not found');
+          router.push(`/tests/${currentSlug}`);
+          return;
         }
-      } else {
+        
+        console.log('✅ Test loaded:', testData.meta.title);
+        setTest(testData);
+        
+        // Generate NEW session ID (всегда новая сессия)
         const newSessionId = generateSessionId();
         setSessionId(newSessionId);
         localStorage.setItem(`test-session-${currentSlug}`, newSessionId);
+        
+        console.log('✅ Session created:', newSessionId);
+        setIsLoading(false);
+      } catch (error) {
+        console.error('❌ Error loading test:', error);
+        if (mounted) setIsLoading(false);
       }
-      
-      setIsLoading(false);
     };
 
     loadTest();
-  }, [params]);
+    
+    return () => {
+      mounted = false;
+    };
+  }, []);
 
   useEffect(() => {
     if (sessionId && answers.length > 0) {
@@ -89,9 +114,17 @@ export default function TestTakingPage({ params }: TestTakingPageProps) {
   const handleNext = () => {
     if (currentAnswer !== null && test) {
       const currentQuestion = test.questions[currentQuestionIndex];
+      
+      // Найти текст выбранного варианта ответа
+      const selectedOption = currentQuestion.options?.find(opt => opt.id === currentAnswer || opt.label === currentAnswer);
+      const answerText = selectedOption ? selectedOption.label : String(currentAnswer);
+      
       const newAnswer: SessionAnswer = {
         questionId: currentQuestion.id,
-        value: currentAnswer,
+        questionText: currentQuestion.text,
+        block: currentQuestion.block,
+        value: answerText, // Сохраняем ТЕКСТ ответа, а не ID
+        answer: answerText,
         timestamp: Date.now(),
       };
 

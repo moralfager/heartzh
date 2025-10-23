@@ -1,60 +1,53 @@
 import Link from "next/link";
 import { Heart, Star, Clock, Search, Filter } from "lucide-react";
 import { TestMeta } from "@/lib/types";
+import { prisma } from "@/lib/prisma";
 
 // Force dynamic rendering to avoid build-time fetch issues
 export const dynamic = 'force-dynamic';
 
-// Get tests from API (database)
+// Get tests directly from database (Server Component)
 async function getTests(): Promise<TestMeta[]> {
   try {
-    console.log('🔍 Fetching tests from API...');
+    console.log('🔍 [Server] Fetching tests from database...');
     
-    // Build absolute URL for fetch
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://heartofzha.ru';
-    const apiUrl = `${baseUrl}/api/admin/tests`;
-    
-    console.log('🌐 Fetching from:', apiUrl);
-    
-    const response = await fetch(apiUrl, {
-      // Short cache to surface new imports quickly
-      next: { revalidate: 5 },
+    const tests = await prisma.test.findMany({
+      where: {
+        published: true, // Only published tests
+      },
+      include: {
+        _count: {
+          select: {
+            questions: true,
+          },
+        },
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
     });
-
-    console.log('📡 Response status:', response.status);
     
-    if (!response.ok) {
-      console.error('❌ API response not OK:', response.status, response.statusText);
-      return [];
-    }
-
-    const data = await response.json();
-    console.log('📊 API response data:', data);
-    const tests = data.tests || [];
+    console.log(`✅ [Server] Found ${tests.length} published tests`);
     
-    console.log(`✅ Found ${tests.length} tests from API`);
+    // Transform to TestMeta format
+    const testMetas: TestMeta[] = tests.map((test) => ({
+      id: test.id,
+      slug: test.slug,
+      title: test.title,
+      subtitle: test.description || '',
+      category: 'relationships', // Default category
+      tags: [], // Can be added to DB schema later
+      estMinutes: Math.ceil(test._count.questions / 7),
+      questionsCount: test._count.questions,
+      isPseudo: true,
+      languages: ['ru'],
+      rating: test.rating,
+    }));
     
-    // Transform to TestMeta format and filter only published tests
-    const publishedTests = tests
-      .filter((test: any) => test.published)
-      .map((test: any) => ({
-        id: test.id,
-        slug: test.slug,
-        title: test.title,
-        subtitle: test.description || '',
-        category: 'relationships', // Default category
-        tags: [], // Can be added to DB schema later
-        estMinutes: Math.ceil(test._count.questions / 7),
-        questionsCount: test._count.questions,
-        isPseudo: true,
-        languages: ['ru'],
-        rating: test.rating || 4.8,
-      }));
-    
-    console.log(`🚀 Returning ${publishedTests.length} published tests`);
-    return publishedTests;
+    console.log(`🚀 [Server] Returning ${testMetas.length} test metas`);
+    return testMetas;
   } catch (error) {
-    console.error('❌ Error fetching tests:', error);
+    console.error('❌ [Server] Error fetching tests:', error);
     return [];
   }
 }

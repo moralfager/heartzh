@@ -44,7 +44,10 @@ export interface Question {
 
 export interface SessionAnswer {
   questionId: string;
+  questionText?: string; // Текст вопроса для админ панели
+  block?: number; // Номер блока
   value: number | string | string[];
+  answer?: number | string | string[]; // Alias для value (для обратной совместимости)
   timestamp: number;
 }
 

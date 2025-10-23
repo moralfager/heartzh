@@ -4,16 +4,14 @@
 
 > 🌐 **Продакшн**: https://heartofzha.ru (HTTPS с SSL от Let's Encrypt)
 > 
-> 🚀 **Автоматический деплой**: Изменения в ветке `prod` автоматически деплоятся на VPS через GitHub Actions.
+> 🚀 **Автоматический деплой**: Push в ветку `prod` → GitHub Actions → VPS
 > 
-> 📋 **Workflow**: [WORKFLOW.md](./WORKFLOW.md) - полное руководство по работе с ветками и деплою
+> 📖 **Деплой**: [START-HERE.md](./START-HERE.md) - быстрый старт для деплоя
 
 ---
 
-## 🔄 Структура веток
+## 🔄 Ветки
 
-- **`main`** - стабильная версия с документацией
-- **`dev`** - активная разработка и тестирование
 - **`prod`** - продакшн с автоматическим деплоем на https://heartofzha.ru
 
 ## ✨ Возможности
@@ -28,47 +26,68 @@
 
 ## 🚀 Быстрый старт
 
-### Локальная разработка (dev ветка)
+### Локальная разработка
 ```bash
-# Переключиться на dev ветку
-git checkout dev
-
 # Установка зависимостей
 npm install
 
-# Запуск в режиме разработки
+# Создать .env файл (Windows)
+powershell -ExecutionPolicy Bypass -File create-env.ps1
+
+# Сгенерировать Prisma Client и настроить БД
+npm run prisma:generate
+npm run prisma:push
+
+# Импортировать тестовые данные
+npm run import-tests
+
+# Запуск в режиме разработки (с Turbopack ⚡)
 npm run dev
 
 # Открыть http://localhost:3000
 ```
 
-### Docker (рекомендуется)
+### Docker (рекомендуется для production)
 ```bash
-# Разработка
-docker-compose up --build
+# Разработка (MySQL + Adminer)
+npm run docker:dev
 
-# Продакшн (тестирование локально)
-docker-compose -f docker-compose.prod.yml up -d --build
+# Production (полный стек)
+npm run docker:prod
+
+# Просмотр логов
+npm run docker:logs
+
+# Остановка
+npm run docker:down
+```
+
+### База данных
+```bash
+# Открыть Prisma Studio (GUI для БД)
+npm run prisma:studio
+
+# Синхронизация схемы
+npm run prisma:push
+
+# Импорт тестов
+npm run import-tests
 ```
 
 ### Деплой в продакшн
 ```bash
-# 1. Протестировать в dev
-git checkout dev
-# ... разработка и тестирование ...
-
-# 2. Слить в main
-git checkout main
-git merge dev
-git push origin main
-
-# 3. Деплой (автоматический!)
+# Автоматический деплой через GitHub Actions
 git checkout prod
-git merge main
 git push origin prod  # 🚀 Автоматически деплоится на https://heartofzha.ru
+
+# Или вручную на сервере
+ssh root@85.202.192.68
+cd /root/psychotest
+git pull origin prod
+docker-compose -f docker-compose.prod.yml up -d --build
 ```
 
-📖 **Подробнее**: [WORKFLOW.md](./WORKFLOW.md)
+📖 **Инструкции**: [START-HERE.md](./START-HERE.md)
 
 ## 🛠️ Технологии
 
@@ -202,50 +221,70 @@ pm2 monit
 
 ## 🚀 Деплой
 
-### Автоматический деплой (текущая настройка)
+### Автоматический деплой через GitHub Actions
 
-**Просто push в prod ветку:**
+**1. Настройка GitHub Secrets (один раз)**
+
+Добавьте secrets в настройках репозитория (Settings → Secrets and variables → Actions):
+
+- `SSH_PRIVATE_KEY` - SSH ключ для подключения к серверу
+- `SERVER_HOST` - `85.202.192.68`
+- `SERVER_USER` - `root`
+- `SERVER_PATH` - `/root/psychotest`
+
+**2. Деплой**
 ```bash
-git checkout prod
-git merge main
+# Просто push в prod
 git push origin prod  # 🚀 Автоматически деплоится!
 ```
 
-**GitHub Actions автоматически:**
-1. Подключается к VPS через SSH
-2. Обновляет код (`git pull origin prod`)
-3. Пересоздает Docker контейнеры
-4. Сайт обновляется на https://heartofzha.ru
+**3. Мониторинг**
+- GitHub Actions: https://github.com/YOUR_USERNAME/YOUR_REPO/actions
+- Логи на сервере: `ssh root@85.202.192.68 "cd /root/psychotest && docker-compose -f docker-compose.prod.yml logs -f"`
 
-**Отслеживание деплоя:**
-- GitHub Actions: https://github.com/moralfager/heartzh/actions
-- Логи на сервере: `docker-compose -f docker-compose.prod.yml logs -f`
+### Ручной деплой
 
-### Ручной деплой (если нужно)
-
-**На VPS:**
+**На сервере:**
 ```bash
-ssh ubuntu@85.202.192.68
-sudo -i
-cd /var/www/heartzh
+ssh root@85.202.192.68
+cd /root/psychotest
 git pull origin prod
 docker-compose -f docker-compose.prod.yml up -d --build
 ```
 
-### SSL сертификаты
-
-**Автоматическое обновление:**
-- Cron задача запускается каждый день в 3:00
-- Скрипт: `/var/www/heartzh/ssl-renew.sh`
-- Сертификаты действительны 90 дней
-
-**Ручное обновление:**
+**Локально (с скриптами):**
 ```bash
-cd /var/www/heartzh
-./ssl-renew.sh
+# Windows
+.\deploy-production.ps1
+
+# Linux/Mac
+./deploy-production.sh
 ```
 
-📖 **Подробнее**: [WORKFLOW.md](./WORKFLOW.md)
+### Первый деплой на чистый сервер
+
+```bash
+# 1. На сервере установить Docker
+curl -fsSL https://get.docker.com -o get-docker.sh
+sh get-docker.sh
+
+# 2. Клонировать репозиторий
+git clone https://github.com/YOUR_USERNAME/YOUR_REPO.git /root/psychotest
+cd /root/psychotest
+git checkout prod
+
+# 3. Создать .env.production
+cp env.production.template .env.production
+nano .env.production  # Изменить пароли!
+
+# 4. Запустить
+docker-compose -f docker-compose.prod.yml up -d --build
+
+# 5. Проверить
+curl http://localhost:3000/api/health
+```
+
+📖 **Детальные инструкции**: [START-HERE.md](./START-HERE.md)
 
 ## 📞 Поддержка
 

@@ -18,6 +18,7 @@ interface AdminResult {
   completedAt: string;
   summaryType: string;
   answers: UserAnswer[];
+  recommendations?: string[];
   attachment: {
     secure: number;
     anxious: number;
@@ -79,14 +80,35 @@ export default function AdminResultsPage() {
         testId: result.testId,
         completedAt: result.createdAt,
         summaryType: result.summary?.summaryType || 'Неизвестно',
+        recommendations: result.summary?.recommendations || [],
         answers: result.detail?.answers 
-          ? Object.entries(result.detail.answers).map(([questionId, answer]: [string, any]) => ({
-              questionId,
-              questionText: answer.questionText || `Вопрос ${questionId}`,
-              block: answer.block || 1,
-              answer: answer.answer || answer.value || answer,
-              timestamp: answer.timestamp || Date.now(),
-            }))
+          ? Object.entries(result.detail.answers).map(([questionId, answer]: [string, any], index) => {
+              // Обрабатываем разные форматы данных
+              let questionText = 'Вопрос не найден';
+              let answerValue: any;
+              let block = 1;
+              let timestamp = Date.now();
+              
+              if (typeof answer === 'object' && answer !== null) {
+                // Новый формат с полными данными
+                questionText = answer.questionText || answer.text || `Вопрос ${index + 1}`;
+                answerValue = answer.answer || answer.value;
+                block = answer.block || 1;
+                timestamp = answer.timestamp || Date.now();
+              } else {
+                // Старый формат - просто значение
+                answerValue = answer;
+                questionText = `Вопрос ${index + 1}`;
+              }
+              
+              return {
+                questionId,
+                questionText,
+                block,
+                answer: answerValue,
+                timestamp,
+              };
+            })
           : [],
         attachment: result.summary?.attachment || { secure: 0, anxious: 0, avoidant: 0 },
         values: result.summary?.values || { support: 0, passion: 0, security: 0, growth: 0 },
@@ -105,10 +127,30 @@ export default function AdminResultsPage() {
   };
 
   const clearAllResults = async () => {
-    // TODO: Implement API endpoint to delete all results
-    console.warn('Clear all results not implemented yet');
-    alert('Функция очистки всех результатов будет доступна в следующей версии');
-    setShowClearModal(false);
+    try {
+      console.log('🗑️ Clearing all results...');
+      
+      const response = await fetch('/api/admin/results/clear', {
+        method: 'DELETE',
+      });
+
+      if (!response.ok) {
+        throw new Error(`Failed to clear results: ${response.statusText}`);
+      }
+
+      const data = await response.json();
+      console.log('✅ Results cleared:', data);
+
+      // Обновить список результатов
+      setResults([]);
+      setShowClearModal(false);
+
+      // Показать уведомление об успехе
+      alert(`Успешно удалено: ${data.deleted.results} результатов и ${data.deleted.sessions} сессий`);
+    } catch (error) {
+      console.error('❌ Error clearing results:', error);
+      alert('Ошибка при удалении результатов. Проверьте консоль для деталей.');
+    }
   };
 
   const exportToCSV = () => {
@@ -347,10 +389,12 @@ export default function AdminResultsPage() {
                           {answer.questionText}
                         </p>
                         <div className="bg-white rounded-lg p-3 border-l-4 border-pink-500">
-                          <p className="text-gray-700">
-                            <strong>Ответ:</strong> {
-                              Array.isArray(answer.answer) 
-                                ? answer.answer.join(', ') 
+                          <p className="text-gray-700 text-base">
+                            <strong>Ответ:</strong>{' '}
+                            {Array.isArray(answer.answer) 
+                              ? answer.answer.join(', ') 
+                              : (typeof answer.answer === 'string' && answer.answer.length > 20 && answer.answer.startsWith('cmg'))
+                                ? 'Не удалось загрузить текст ответа'
                                 : answer.answer
                             }
                           </p>
@@ -361,7 +405,28 @@ export default function AdminResultsPage() {
                 </div>
               ) : (
                 /* Results View */
-                <div className="grid md:grid-cols-2 gap-6">
+                <div className="space-y-6">
+                  {/* Recommendations Section */}
+                  {selectedResult.recommendations && selectedResult.recommendations.length > 0 && (
+                    <div className="bg-gradient-to-r from-pink-50 to-purple-50 rounded-xl p-6 border-2 border-pink-200">
+                      <h4 className="font-semibold text-gray-800 mb-4 text-lg flex items-center">
+                        <span className="bg-pink-500 text-white rounded-full w-6 h-6 flex items-center justify-center mr-2 text-sm">💡</span>
+                        Рекомендации
+                      </h4>
+                      <ul className="space-y-3">
+                        {selectedResult.recommendations.map((rec, index) => (
+                          <li key={index} className="flex items-start space-x-3 bg-white rounded-lg p-3 shadow-sm">
+                            <span className="bg-pink-100 text-pink-600 rounded-full w-6 h-6 flex items-center justify-center flex-shrink-0 mt-0.5 text-sm font-medium">
+                              {index + 1}
+                            </span>
+                            <span className="text-gray-700 leading-relaxed">{rec}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+
+                  <div className="grid md:grid-cols-2 gap-6">
                   {/* Attachment */}
                   <div className="bg-gray-50 rounded-xl p-4">
                     <h4 className="font-semibold text-gray-800 mb-3">Тип привязанности</h4>
@@ -456,6 +521,7 @@ export default function AdminResultsPage() {
                         <span className="font-medium">{selectedResult.conflict.compete}%</span>
                       </div>
                     </div>
+                  </div>
                   </div>
                 </div>
               )}

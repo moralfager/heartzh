@@ -28,6 +28,7 @@ yarn-error.log*
 # local env files
 .env*.local
 .env
+.env.production
 
 # vercel
 .vercel
@@ -56,3 +57,15 @@ Thumbs.db
 # Database
 *.db
 *.sqlite
+
+# Production files
+database/*.sql
+!database/init-production.sql
+
+# Deployment
+deploy-*.log
+deployment-*.log
+
+# Server backups
+*.backup
+*.bak

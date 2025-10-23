@@ -2,30 +2,84 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Heart, Star, Clock, Users, ArrowRight, CheckCircle, Shield, AlertCircle } from "lucide-react";
 import { TestDefinition } from "@/lib/types";
+import { prisma } from "@/lib/prisma";
 
-// Get test data from API (database)
+// Get test data directly from database (Server Component)
 async function getTest(slug: string): Promise<{ test: TestDefinition | null; published: boolean }> {
   try {
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://heartofzha.ru';
-    const response = await fetch(`${baseUrl}/api/tests/${slug}?checkPublished=true`, {
-      next: { revalidate: 60 }, // Cache for 60 seconds
+    console.log(`🔍 [Server] Fetching test: ${slug}`);
+    
+    const test = await prisma.test.findUnique({
+      where: { slug },
+      include: {
+        questions: {
+          orderBy: { order: 'asc' },
+          include: {
+            options: true,
+          },
+        },
+        scales: true,
+        rules: {
+          orderBy: { priority: 'asc' },
+        },
+      },
     });
 
-    if (!response.ok) {
-      if (response.status === 404) {
-        return { test: null, published: false };
-      }
-      if (response.status === 403) {
-        // Test exists but unpublished
-        return { test: null, published: false };
-      }
+    if (!test) {
+      console.log(`❌ [Server] Test not found: ${slug}`);
       return { test: null, published: false };
     }
 
-    const testData = await response.json();
-    return { test: testData as TestDefinition, published: true };
+    if (!test.published) {
+      console.log(`⚠️ [Server] Test unpublished: ${slug}`);
+      return { test: null, published: false };
+    }
+
+    console.log(`✅ [Server] Test found: ${test.title}`);
+
+    // Transform to TestDefinition format
+    const testDefinition: TestDefinition = {
+      meta: {
+        id: test.id,
+        slug: test.slug,
+        title: test.title,
+        subtitle: test.description || '',
+        category: 'relationships',
+        tags: [],
+        estMinutes: Math.ceil(test.questions.length / 7),
+        questionsCount: test.questions.length,
+        isPseudo: true,
+        languages: ['ru'],
+        rating: test.rating,
+      },
+      questions: test.questions.map((q) => ({
+        id: q.id,
+        block: 1,
+        text: q.text,
+        scale: q.type as any,
+        options: q.options.map((opt) => ({
+          id: opt.id,
+          label: opt.text,
+          domains: opt.weights as any || {},
+        })),
+      })),
+      scales: test.scales.map((s) => ({
+        key: s.key,
+        name: s.name,
+        min: s.min,
+        max: s.max,
+        bands: s.bands as any,
+      })),
+      rules: test.rules.map((r) => ({
+        kind: r.kind,
+        priority: r.priority,
+        payload: r.payload as any,
+      })),
+    };
+
+    return { test: testDefinition, published: true };
   } catch (error) {
-    console.error('Error fetching test:', error);
+    console.error('❌ [Server] Error fetching test:', error);
     return { test: null, published: false };
   }
 }

@@ -232,11 +232,21 @@ export default function ResultsPage({ params }: ResultsPageProps) {
           // Сохраняем результат через новый API
           const answersMap: Record<string, any> = {};
           answers.forEach(answer => {
-            const question = testData.questions.find(q => q.id === answer.questionId);
+            // Используем questionText из ответа если есть, иначе ищем в вопросах
+            let questionText = answer.questionText;
+            let block = answer.block || 1;
+            
+            if (!questionText) {
+              const question = testData.questions.find(q => q.id === answer.questionId);
+              questionText = question?.text || `Вопрос ${answer.questionId}`;
+              block = question?.block || 1;
+            }
+            
             answersMap[answer.questionId] = {
-              questionText: question?.text || '',
-              block: question?.block || 1,
+              questionText: questionText,
+              block: block,
               value: answer.value,
+              answer: answer.answer || answer.value, // Для обратной совместимости
               timestamp: answer.timestamp
             };
           });

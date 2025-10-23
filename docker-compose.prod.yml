@@ -1,27 +1,46 @@
 services:
-  # MySQL на сервере уже установлена (не запускаем в Docker)
-  # В .env используйте: DATABASE_URL="mysql://user:password@172.17.0.1:3306/psychotest_production"
-  # 172.17.0.1 - это IP хоста из Docker контейнера
+  # MySQL Database
+  mysql:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-rootpassword}
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-psychotest}
+      MYSQL_USER: ${MYSQL_USER:-psychotest}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-psychotest}
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./database/init-production.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "3306:3306"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${MYSQL_ROOT_PASSWORD:-rootpassword}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    command: --default-authentication-plugin=mysql_native_password --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
 
-  # Основное приложение
+  # Main Application
   psychotest:
     build: .
     ports:
       - "3000:3000"
     env_file:
-      - .env
+      - .env.production
     environment:
       - NODE_ENV=production
       - PORT=3000
-    extra_hosts:
-      - "host.docker.internal:host-gateway"  # Доступ к MySQL на хосте
+    depends_on:
+      mysql:
+        condition: service_healthy
     restart: unless-stopped
     healthcheck:
-      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://127.0.0.1:3000"]
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://127.0.0.1:3000/api/health"]
       interval: 30s
       timeout: 10s
       retries: 3
-      start_period: 40s
+      start_period: 60s
 
   # Nginx как обратный прокси
   nginx:
@@ -48,5 +67,6 @@ services:
     restart: unless-stopped
 
 volumes:
+  mysql_data:
   letsencrypt:
   certbot-webroot:
