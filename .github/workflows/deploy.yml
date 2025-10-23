@@ -2,26 +2,43 @@ name: Deploy to Production
 
 on:
   push:
-    branches:
-      - prod
+    branches: [prod]
   workflow_dispatch:
 
 jobs:
-  deploy:
-    name: Deploy to VPS
+  build-and-push:
     runs-on: ubuntu-latest
-
+    permissions:
+      contents: read
+      packages: write
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Validate secrets
-        run: |
-          [ -n "${{ secrets.SSH_HOST }}" ] || { echo "SSH_HOST empty"; exit 1; }
-          [ -n "${{ secrets.SSH_USER }}" ] || { echo "SSH_USER empty"; exit 1; }
-          [ -n "${{ secrets.SSH_KEY }}" ]  || { echo "SSH_KEY empty"; exit 1; }
-          [ -n "${{ secrets.SERVER_PATH }}" ] || { echo "SERVER_PATH empty"; exit 1; }
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
 
+      - name: Login to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build & push image with cache
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          tags: ghcr.io/${{ github.repository }}:${{ github.sha }},ghcr.io/${{ github.repository }}:prod
+          cache-from: type=registry,ref=ghcr.io/${{ github.repository }}:cache
+          cache-to: type=registry,ref=ghcr.io/${{ github.repository }}:cache,mode=max
+          build-args: |
+            BUILDKIT_INLINE_CACHE=1
+
+  deploy:
+    needs: build-and-push
+    runs-on: ubuntu-latest
+    steps:
       - name: Deploy to server
         uses: appleboy/ssh-action@v1.0.0
         with:
@@ -29,25 +46,34 @@ jobs:
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_KEY }}
           port: ${{ secrets.SSH_PORT }}
-          timeout: 3m
-          command_timeout: 45m
+          timeout: 10m
+          command_timeout: 30m
           script: |
             set -e
             cd ${{ secrets.SERVER_PATH }}
-            git fetch --all
+            
+            # Быстрое обновление конфигов без полного fetch
+            git fetch origin prod --depth=1
             git reset --hard origin/prod
-            [ -f .env.production ] || { echo "❌ .env.production not found"; exit 1; }
-            export DOCKER_BUILDKIT=1
-            export COMPOSE_DOCKER_CLI_BUILD=1
-            docker compose -f docker-compose.prod.yml up -d --build
-            sleep 10
+            
+            # Устанавливаем переменную репозитория
+            export GITHUB_REPOSITORY=${{ github.repository }}
+            
+            # Логин в GHCR
+            echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+            
+            # Подтягиваем только свежий образ приложения
+            docker pull ghcr.io/${{ github.repository }}:prod
+            
+            # Перезапуск только изменённого сервиса
+            docker compose -f docker-compose.prod.yml up -d --no-build psychotest
+            
+            # Проверка здоровья
+            sleep 5
             curl -fsS http://localhost:3000/api/health || {
               echo "❌ Health check failed"
-              docker compose -f docker-compose.prod.yml logs --tail=200
+              docker compose -f docker-compose.prod.yml logs psychotest --tail=100
               exit 1
             }
-            echo "✅ Done: https://heartofzha.ru"
-
-      - name: Notify on failure
-        if: failure()
-        run: echo "❌ Deployment failed. Check logs."
+            
+            echo "✅ Deployed: https://heartofzha.ru"
