@@ -30,7 +30,8 @@ jobs:
           DATABASE_URL: "mysql://placeholder:placeholder@localhost:3306/placeholder"
       
       - name: Run tests
-        run: npm test || echo "No tests configured"
+        run: npm test || echo "Tests skipped or failed (non-blocking)"
+        continue-on-error: true
       
       - name: Deploy to server
         uses: appleboy/ssh-action@v1.0.0
