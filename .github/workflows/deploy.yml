@@ -30,7 +30,6 @@ jobs:
           port: ${{ secrets.SSH_PORT }}
           script: |
             set -e
-            echo "🚀 Deploying..."
             cd ${{ secrets.SERVER_PATH }}
             git fetch --all
             git reset --hard origin/prod
