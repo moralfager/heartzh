@@ -54,57 +54,46 @@ async function exportDatabase() {
         const createdAt = dr.createdAt ? dr.createdAt.toISOString() : new Date().toISOString();
         const updatedAt = dr.updatedAt ? dr.updatedAt.toISOString() : new Date().toISOString();
         sqlStatements.push(
-          `INSERT INTO default_results (id, test_id, title, description, recommendations, created_at, updated_at) VALUES (` +
-            `'${dr.id}', '${dr.testId}', ${escapeString(dr.title)}, ${escapeString(dr.description)}, ` +
-            `${escapeString(JSON.stringify(dr.recommendations))}, ` +
+          `INSERT INTO default_results (id, test_id, summary_type, summary, recommendations, scales_data, created_at, updated_at) VALUES (` +
+            `'${dr.id}', '${dr.testId}', ${escapeString(dr.summaryType)}, ${escapeString(dr.summary)}, ` +
+            `${escapeString(JSON.stringify(dr.recommendations))}, ${escapeString(JSON.stringify(dr.scalesData))}, ` +
             `'${createdAt}', '${updatedAt}');`
         );
       }
 
       // Insert questions
       for (const question of test.questions) {
-        const qCreatedAt = question.createdAt ? question.createdAt.toISOString() : new Date().toISOString();
-        const qUpdatedAt = question.updatedAt ? question.updatedAt.toISOString() : new Date().toISOString();
         sqlStatements.push(
-          `INSERT INTO questions (id, test_id, text, type, \`order\`, created_at, updated_at) VALUES (` +
+          `INSERT INTO questions (id, test_id, text, type, \`order\`) VALUES (` +
             `'${question.id}', '${question.testId}', ${escapeString(question.text)}, '${question.type}', ` +
-            `${question.order}, '${qCreatedAt}', '${qUpdatedAt}');`
+            `${question.order});`
         );
 
         // Insert options
         for (const option of question.options) {
-          const oCreatedAt = option.createdAt ? option.createdAt.toISOString() : new Date().toISOString();
-          const oUpdatedAt = option.updatedAt ? option.updatedAt.toISOString() : new Date().toISOString();
           sqlStatements.push(
-            `INSERT INTO answer_options (id, question_id, text, value, weights, created_at, updated_at) VALUES (` +
+            `INSERT INTO answer_options (id, question_id, text, value, weights) VALUES (` +
               `'${option.id}', '${option.questionId}', ${escapeString(option.text)}, ${option.value}, ` +
-              `${escapeString(JSON.stringify(option.weights))}, ` +
-              `'${oCreatedAt}', '${oUpdatedAt}');`
+              `${escapeString(JSON.stringify(option.weights))});`
           );
         }
       }
 
       // Insert scales
       for (const scale of test.scales) {
-        const sCreatedAt = scale.createdAt ? scale.createdAt.toISOString() : new Date().toISOString();
-        const sUpdatedAt = scale.updatedAt ? scale.updatedAt.toISOString() : new Date().toISOString();
         sqlStatements.push(
-          `INSERT INTO scales (id, test_id, \`key\`, name, min, max, bands, created_at, updated_at) VALUES (` +
+          `INSERT INTO scales (id, test_id, \`key\`, name, min, max, bands) VALUES (` +
             `'${scale.id}', '${scale.testId}', '${scale.key}', ${escapeString(scale.name)}, ` +
-            `${scale.min}, ${scale.max}, ${escapeString(JSON.stringify(scale.bands))}, ` +
-            `'${sCreatedAt}', '${sUpdatedAt}');`
+            `${scale.min}, ${scale.max}, ${escapeString(JSON.stringify(scale.bands))});`
         );
       }
 
       // Insert rules
       for (const rule of test.rules) {
-        const rCreatedAt = rule.createdAt ? rule.createdAt.toISOString() : new Date().toISOString();
-        const rUpdatedAt = rule.updatedAt ? rule.updatedAt.toISOString() : new Date().toISOString();
         sqlStatements.push(
-          `INSERT INTO rules (id, test_id, kind, priority, payload, created_at, updated_at) VALUES (` +
+          `INSERT INTO rules (id, test_id, kind, priority, payload) VALUES (` +
             `'${rule.id}', '${rule.testId}', '${rule.kind}', ${rule.priority}, ` +
-            `${escapeString(JSON.stringify(rule.payload))}, ` +
-            `'${rCreatedAt}', '${rUpdatedAt}');`
+            `${escapeString(JSON.stringify(rule.payload))});`
         );
       }
 
