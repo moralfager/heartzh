@@ -10,6 +10,7 @@ jobs:
   deploy:
     name: Deploy to VPS
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -25,9 +26,9 @@ jobs:
         uses: appleboy/ssh-action@v1.0.0
         with:
           host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USER }}
+          username: ${{ secrets.SSH_USER }}   # ubuntu
           key: ${{ secrets.SSH_KEY }}
-          port: ${{ secrets.SSH_PORT }}
+          port: ${{ secrets.SSH_PORT }}       # 22
           script: |
             set -e
             cd ${{ secrets.SERVER_PATH }}
@@ -42,6 +43,7 @@ jobs:
               exit 1
             }
             echo "✅ Done: https://heartofzha.ru"
+            '
 
       - name: Notify on failure
         if: failure()

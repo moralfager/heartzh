@@ -128,3 +128,4 @@ docker-compose -f docker-compose.prod.yml logs -f
 4. Проверь http://heartofzha.ru ✅
 5. Настрой SSL 🔒
 
+
