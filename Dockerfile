@@ -1,13 +1,15 @@
 # ================================
 # Dependencies Stage
 # ================================
+# syntax=docker/dockerfile:1.4
 FROM node:18-alpine AS deps
 WORKDIR /app
 
 # Install dependencies based on the package manager
 COPY package.json package-lock.json* ./
 # Install all deps but skip postinstall scripts (prisma generate will run in builder stage)
-RUN npm ci --ignore-scripts && npm cache clean --force
+RUN --mount=type=cache,target=/root/.npm \
+    npm ci --ignore-scripts && npm cache clean --force
 
 # ================================
 # Builder Stage
@@ -26,7 +28,9 @@ RUN npx prisma generate
 
 # Build Next.js application
 ENV NEXT_TELEMETRY_DISABLED=1
-RUN npm run build
+RUN --mount=type=cache,target=/root/.npm \
+    --mount=type=cache,target=/app/.next/cache \
+    npm run build
 
 # ================================
 # Runner Stage (Production)
