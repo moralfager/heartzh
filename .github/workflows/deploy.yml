@@ -8,36 +8,23 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 20
 
     steps:
-      - name: Checkout repository
+      - name: Checkout
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - name: Create deploy archive
-        run: |
-          git archive -o release.tar.gz HEAD
+      - name: Build release archive
+        run: git archive -o release.tar.gz HEAD
 
-      - name: Prepare release directory on VPS
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USER }}
-          key: ${{ secrets.SSH_KEY }}
-          port: ${{ secrets.SSH_PORT || 22 }}
-          envs: GITHUB_SHA
-          script: |
-            set -e
-            mkdir -p /var/www/heartzh/releases/${GITHUB_SHA}
-
-      - name: Upload archive via rsync
+      - name: Upload release (rsync)
         uses: burnett01/rsync-deployments@7.0.1
         with:
-          switches: -avz --progress
+          switches: -avz
           path: release.tar.gz
-          remote_path: /var/www/heartzh/releases/${{ github.sha }}/
+          remote_path: /var/www/heartzh/
           remote_host: ${{ secrets.SSH_HOST }}
           remote_user: ${{ secrets.SSH_USER }}
           remote_key: ${{ secrets.SSH_KEY }}
@@ -50,49 +37,27 @@ jobs:
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_KEY }}
           port: ${{ secrets.SSH_PORT || 22 }}
-          command_timeout: 30m
-          envs: GITHUB_SHA
+          command_timeout: 20m
           script: |
             set -e
-            RELEASE_DIR=/var/www/heartzh/releases/${GITHUB_SHA}
-            APP_DIR=/var/www/heartzh/current
-            SHARED_DIR=/var/www/heartzh/shared
+            cd /var/www/heartzh
 
-            echo "📦 Preparing release directories..."
-            mkdir -p "$RELEASE_DIR" "$SHARED_DIR"
-            cd "$RELEASE_DIR"
-
-            echo "📦 Extracting archive..."
+            echo "📦 Extracting release..."
             tar -xzf release.tar.gz
+            rm -f release.tar.gz
 
-            # Persist env file between releases
-            if [ -f /var/www/heartzh/.env ]; then cp /var/www/heartzh/.env "$SHARED_DIR/.env"; fi
-            ln -sf "$SHARED_DIR/.env" "$RELEASE_DIR/.env"
+            echo "🛑 Stopping containers..."
+            docker compose -f docker-compose.prod.yml down || true
 
-            # Use stable compose project name to keep container names constant
-            export COMPOSE_PROJECT_NAME=heartzh
+            echo "🚀 Build & start..."
+            docker compose -f docker-compose.prod.yml up -d --build
 
-            echo "🛑 Stopping containers (if any)..."
-            docker compose -f "$RELEASE_DIR/docker-compose.prod.yml" down || true
-
-            echo "🏗️ Building images..."
-            docker compose -f "$RELEASE_DIR/docker-compose.prod.yml" build
-
-            echo "🚀 Starting containers..."
-            docker compose -f "$RELEASE_DIR/docker-compose.prod.yml" up -d
-
-            echo "⏳ Waiting for containers to start..."
+            echo "⏳ Waiting..."
             sleep 8
 
-            echo "🗃  Updating database schema..."
-            docker exec heartzh-psychotest-1 npx prisma db push --skip-generate || echo "⚠️ Schema update skipped"
+            echo "🗃  Sync DB schema (optional)"
+            docker exec heartzh-psychotest-1 npx prisma db push --skip-generate || true
 
-            echo "🔗 Activating release..."
-            ln -sfn "$RELEASE_DIR" "$APP_DIR"
-
-            echo "🧹 Cleaning old releases (keep 3)..."
-            ls -1dt /var/www/heartzh/releases/* | tail -n +4 | xargs -r rm -rf
-
-            echo "✅ Deployment complete!"
+            echo "✅ Done"
             docker ps
-            docker compose -f "$RELEASE_DIR/docker-compose.prod.yml" logs --tail=30 psychotest
+            docker compose -f docker-compose.prod.yml logs --tail=30 psychotest
