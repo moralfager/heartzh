@@ -69,3 +69,6 @@ deployment-*.log
 # Server backups
 *.backup
 *.bak
+
+# Original egg project (integrated into src/app/egg/)
+egg/
