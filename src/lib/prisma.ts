@@ -24,8 +24,17 @@ const createPrismaClient = () => {
             if ((error.code === 'P1017' || error.code === 'P1001') && attempt < maxRetries - 1) {
               console.warn(`[Prisma] Connection lost (${error.code}), retrying ${model}.${operation}... (attempt ${attempt + 1}/${maxRetries})`);
               
-              // Exponential backoff: 1s, 2s, 3s
-              await new Promise(resolve => setTimeout(resolve, 1000 * (attempt + 1)));
+              // Disconnect and reconnect
+              try {
+                await baseClient.$disconnect();
+                console.log(`[Prisma] Disconnected, waiting ${attempt + 1}s before reconnect...`);
+                await new Promise(resolve => setTimeout(resolve, 1000 * (attempt + 1)));
+                await baseClient.$connect();
+                console.log(`[Prisma] Reconnected successfully`);
+              } catch (reconnectError) {
+                console.error(`[Prisma] Reconnect failed:`, reconnectError);
+              }
+              
               continue;
             }
             
