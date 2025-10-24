@@ -14,10 +14,22 @@ export default function Home() {
   const [isClient, setIsClient] = useState(false);
   const [showResumeLink, setShowResumeLink] = useState(false);
   const [resumeUrl, setResumeUrl] = useState('');
+  const [hasAccess, setHasAccess] = useState(false);
 
   useEffect(() => {
     setIsClient(true);
-  }, []);
+    
+    // Проверяем доступ
+    if (typeof window !== 'undefined') {
+      const access = localStorage.getItem('egg_access_granted');
+      if (!access) {
+        // Нет доступа - редиректим на about
+        router.push('/about');
+      } else {
+        setHasAccess(true);
+      }
+    }
+  }, [router]);
 
   const hasStarted = startedAt !== null;
   const currentChapterNum = current ? parseInt(current.replace('ch', '')) : 1;
@@ -52,8 +64,8 @@ export default function Home() {
     }
   };
 
-  if (!isClient) {
-    return null; // Prevent hydration mismatch
+  if (!isClient || !hasAccess) {
+    return null; // Prevent hydration mismatch and unauthorized access
   }
 
   return (

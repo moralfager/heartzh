@@ -1,7 +1,32 @@
+'use client';
+
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { Heart, Shield, Users, Star, ArrowLeft } from "lucide-react";
+import AccessModal from "@/app/egg/_components/ui/AccessModal";
 
 export default function AboutPage() {
+  const router = useRouter();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handleEggAccess = () => {
+    // Проверяем есть ли уже доступ
+    if (typeof window !== 'undefined') {
+      const hasAccess = localStorage.getItem('egg_access_granted');
+      if (hasAccess) {
+        router.push('/egg');
+      } else {
+        setIsModalOpen(true);
+      }
+    }
+  };
+
+  const handleAccessGranted = () => {
+    setIsModalOpen(false);
+    router.push('/egg');
+  };
+
   return (
     <div className="min-h-screen gradient-bg">
       {/* Header */}
@@ -196,7 +221,10 @@ export default function AboutPage() {
             </div>
 
             {/* Special Gift Section */}
-            <Link href="/egg" className="block group">
+            <div 
+              onClick={handleEggAccess}
+              className="block group cursor-pointer"
+            >
               <div className="bg-gradient-to-br from-pink-50 to-purple-50 rounded-2xl shadow-lg p-8 border-2 border-pink-200 hover:border-pink-400 transition-all duration-300 hover:shadow-xl transform hover:-translate-y-1">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-4">
@@ -215,7 +243,14 @@ export default function AboutPage() {
                   <Heart className="h-8 w-8 text-pink-500 group-hover:text-pink-600 transition-colors" />
                 </div>
               </div>
-            </Link>
+            </div>
+
+            {/* Access Modal */}
+            <AccessModal 
+              isOpen={isModalOpen}
+              onClose={() => setIsModalOpen(false)}
+              onSuccess={handleAccessGranted}
+            />
           </div>
         </div>
       </main>
