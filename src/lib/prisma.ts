@@ -1,48 +1,12 @@
 import { PrismaClient } from '@prisma/client';
 
-// Создаём Prisma Client с расширенным логированием
+// Создаём Prisma Client с расширенным логированием и правильной конфигурацией для MySQL
 const createPrismaClient = () => {
-  const baseClient = new PrismaClient({
+  const client = new PrismaClient({
     log: process.env.NODE_ENV === 'development' ? ['query', 'error', 'warn'] : ['error'],
-  });
-
-  // Используем Client Extensions для обработки переподключения
-  const client = baseClient.$extends({
-    query: {
-      async $allOperations({ operation, model, args, query }) {
-        const maxRetries = 3;
-        let lastError: any;
-        
-        for (let attempt = 0; attempt < maxRetries; attempt++) {
-          try {
-            return await query(args);
-          } catch (error: any) {
-            lastError = error;
-            
-            // P1017 - Server has closed the connection
-            // P1001 - Can't reach database server
-            if ((error.code === 'P1017' || error.code === 'P1001') && attempt < maxRetries - 1) {
-              console.warn(`[Prisma] Connection lost (${error.code}), retrying ${model}.${operation}... (attempt ${attempt + 1}/${maxRetries})`);
-              
-              // Disconnect and reconnect
-              try {
-                await baseClient.$disconnect();
-                console.log(`[Prisma] Disconnected, waiting ${attempt + 1}s before reconnect...`);
-                await new Promise(resolve => setTimeout(resolve, 1000 * (attempt + 1)));
-                await baseClient.$connect();
-                console.log(`[Prisma] Reconnected successfully`);
-              } catch (reconnectError) {
-                console.error(`[Prisma] Reconnect failed:`, reconnectError);
-              }
-              
-              continue;
-            }
-            
-            throw error;
-          }
-        }
-        
-        throw lastError;
+    datasources: {
+      db: {
+        url: process.env.DATABASE_URL,
       },
     },
   });
@@ -58,10 +22,31 @@ export const prisma = globalForPrisma.prisma ?? createPrismaClient();
 
 if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma;
 
-// Graceful shutdown
+// Keep-alive механизм для MySQL
 if (typeof window === 'undefined') {
+  // Пингуем БД каждые 5 минут чтобы соединение не закрылось
+  const keepAliveInterval = setInterval(async () => {
+    try {
+      await prisma.$queryRaw`SELECT 1`;
+      console.log('[Prisma] Keep-alive ping successful');
+    } catch (error) {
+      console.error('[Prisma] Keep-alive ping failed:', error);
+      // Пробуем переподключиться
+      try {
+        await prisma.$disconnect();
+        await prisma.$connect();
+        console.log('[Prisma] Reconnected after failed ping');
+      } catch (reconnectError) {
+        console.error('[Prisma] Reconnection failed:', reconnectError);
+      }
+    }
+  }, 5 * 60 * 1000); // 5 минут
+
+  // Graceful shutdown
   const shutdown = async () => {
+    clearInterval(keepAliveInterval);
     await prisma.$disconnect();
+    console.log('[Prisma] Disconnected gracefully');
   };
   
   process.on('beforeExit', shutdown);

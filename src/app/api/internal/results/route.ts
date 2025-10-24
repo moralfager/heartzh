@@ -52,12 +52,31 @@ export async function POST(request: NextRequest) {
     const { testId, version, answers, summary, details } = validation.data;
 
     // Проверка существования теста (ищем по slug, т.к. testId на самом деле slug)
-    const testExists = await prisma.test.findFirst({
-      where: {
-        slug: testId, // testId на самом деле slug из URL
-        published: true,
-      },
-    });
+    let testExists;
+    try {
+      testExists = await prisma.test.findFirst({
+        where: {
+          slug: testId, // testId на самом деле slug из URL
+          published: true,
+        },
+      });
+    } catch (dbError: any) {
+      console.error('[API] Database error finding test:', dbError);
+      // Пробуем переподключиться и повторить
+      try {
+        await prisma.$disconnect();
+        await prisma.$connect();
+        testExists = await prisma.test.findFirst({
+          where: {
+            slug: testId,
+            published: true,
+          },
+        });
+      } catch (retryError) {
+        console.error('[API] Retry failed:', retryError);
+        throw dbError;
+      }
+    }
 
     if (!testExists) {
       return NextResponse.json(
@@ -68,24 +87,52 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Создание результата (используем реальный ID теста из БД)
-    const result = await prisma.result.create({
-      data: {
-        testId: testExists.id, // Используем реальный ID из БД
-        sessionId: session.id,
-        version,
-        summary,
-        detail: {
-          create: {
-            answers,
-            details: details || {},
+    // Создание результата (используем реальный ID теста из БД) с retry логикой
+    let result;
+    const maxRetries = 3;
+    let lastError;
+
+    for (let attempt = 0; attempt < maxRetries; attempt++) {
+      try {
+        result = await prisma.result.create({
+          data: {
+            testId: testExists.id, // Используем реальный ID из БД
+            sessionId: session.id,
+            version,
+            summary,
+            detail: {
+              create: {
+                answers,
+                details: details || {},
+              },
+            },
           },
-        },
-      },
-      include: {
-        detail: true,
-      },
-    });
+          include: {
+            detail: true,
+          },
+        });
+        break; // Успешно создали, выходим из цикла
+      } catch (error: any) {
+        lastError = error;
+        console.error(`[API] Create result attempt ${attempt + 1}/${maxRetries} failed:`, error.message);
+        
+        if (attempt < maxRetries - 1) {
+          // Переподключаемся к БД
+          try {
+            await prisma.$disconnect();
+            await new Promise(resolve => setTimeout(resolve, 1000 * (attempt + 1)));
+            await prisma.$connect();
+            console.log(`[API] Reconnected, retrying...`);
+          } catch (reconnectError) {
+            console.error('[API] Reconnect failed:', reconnectError);
+          }
+        }
+      }
+    }
+
+    if (!result) {
+      throw lastError || new Error('Failed to create result after retries');
+    }
 
     return NextResponse.json(
       {
