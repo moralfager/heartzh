@@ -3,6 +3,15 @@ const nextConfig = {
   // Standalone для Docker
   output: 'standalone',
   
+  // Исключить оригинальную папку egg из сборки
+  webpack: (config, { isServer }) => {
+    config.watchOptions = {
+      ...config.watchOptions,
+      ignored: ['**/egg/**', '**/node_modules/**'],
+    };
+    return config;
+  },
+  
   // Экспериментальные функции
   experimental: {
     optimizeCss: false,

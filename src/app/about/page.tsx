@@ -194,6 +194,28 @@ export default function AboutPage() {
                 <strong>Email:</strong> hello@psychology-love.ru
               </p>
             </div>
+
+            {/* Special Gift Section */}
+            <Link href="/egg" className="block group">
+              <div className="bg-gradient-to-br from-pink-50 to-purple-50 rounded-2xl shadow-lg p-8 border-2 border-pink-200 hover:border-pink-400 transition-all duration-300 hover:shadow-xl transform hover:-translate-y-1">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-4">
+                    <div className="w-16 h-16 bg-gradient-to-br from-pink-400 to-purple-400 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                      <span className="text-3xl">❤️</span>
+                    </div>
+                    <div>
+                      <h2 className="text-2xl font-semibold text-gray-800 mb-2">
+                        Подарок для Жаният
+                      </h2>
+                      <p className="text-gray-600">
+                        Интерактивный романтический квест из 5 глав
+                      </p>
+                    </div>
+                  </div>
+                  <Heart className="h-8 w-8 text-pink-500 group-hover:text-pink-600 transition-colors" />
+                </div>
+              </div>
+            </Link>
           </div>
         </div>
       </main>
