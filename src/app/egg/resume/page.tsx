@@ -54,11 +54,14 @@ function ResumeContent() {
           setStatus('success');
           setMessage('Прогресс восстановлен!');
 
+          // Предоставляем доступ
+          localStorage.setItem('egg_access_granted', 'true');
+          
           // Redirect to current chapter
           setTimeout(() => {
             const currentChapter =
               data.progress.current?.replace('ch', '') || '1';
-            router.push(`/chapter/${currentChapter}`);
+            router.push(`/egg/chapter/${currentChapter}`);
           }, 2000);
         } else {
           setStatus('error');
@@ -117,7 +120,7 @@ function ResumeContent() {
             <h2 className="text-3xl font-display text-ink">Ошибка</h2>
             <p className="text-lg text-ink/70 font-sans">{message}</p>
             <button
-              onClick={() => router.push('/')}
+              onClick={() => router.push('/about')}
               className="
                 px-6 py-3 rounded-[16px]
                 bg-gradient-to-br from-blush to-lavender

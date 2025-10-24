@@ -31,6 +31,9 @@ function UnlockContent() {
       .then((res) => res.json())
       .then((data) => {
         if (data.valid && data.chapterId) {
+          // Предоставляем доступ
+          localStorage.setItem('egg_access_granted', 'true');
+          
           // Unlock the chapter
           const chapterId = data.chapterId as 'ch1' | 'ch2' | 'ch3' | 'ch4' | 'ch5';
           unlockChapter(chapterId);
@@ -40,7 +43,7 @@ function UnlockContent() {
 
           // Redirect to the chapter after a delay
           setTimeout(() => {
-            router.push(`/chapter/${chapterId.replace('ch', '')}`);
+            router.push(`/egg/chapter/${chapterId.replace('ch', '')}`);
           }, 2000);
         } else {
           setStatus('error');
@@ -97,7 +100,7 @@ function UnlockContent() {
             <h2 className="text-3xl font-display text-ink">Ошибка</h2>
             <p className="text-lg text-ink/70 font-sans">{message}</p>
             <button
-              onClick={() => router.push('/')}
+              onClick={() => router.push('/about')}
               className="
                 px-6 py-3 rounded-[16px]
                 bg-gradient-to-br from-blush to-lavender

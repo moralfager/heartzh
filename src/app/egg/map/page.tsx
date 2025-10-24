@@ -12,12 +12,23 @@ export default function MapPage() {
   const router = useRouter();
   const { chapters, current } = useProgressStore();
   const [isClient, setIsClient] = useState(false);
+  const [hasAccess, setHasAccess] = useState(false);
 
   useEffect(() => {
     setIsClient(true);
-  }, []);
+    
+    // Проверяем доступ
+    if (typeof window !== 'undefined') {
+      const access = localStorage.getItem('egg_access_granted');
+      if (!access) {
+        router.push('/about');
+      } else {
+        setHasAccess(true);
+      }
+    }
+  }, [router]);
 
-  if (!isClient) return null;
+  if (!isClient || !hasAccess) return null;
 
   const chapterIds: ChapterId[] = ['ch1', 'ch2', 'ch3', 'ch4', 'ch5'];
 
@@ -31,7 +42,7 @@ export default function MapPage() {
 
     // Navigate to chapter
     const chapterNum = chapterId.replace('ch', '');
-    router.push(`/chapter/${chapterNum}`);
+    router.push(`/egg/chapter/${chapterNum}`);
   };
 
   return (
@@ -203,7 +214,7 @@ export default function MapPage() {
           transition={{ delay: 0.8 }}
         >
           <button
-            onClick={() => router.push('/')}
+            onClick={() => router.push('/egg')}
             className="
               px-6 py-3 rounded-[16px]
               glass-strong
