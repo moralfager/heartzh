@@ -8,7 +8,7 @@ interface BackButtonProps {
   label?: string;
 }
 
-export default function BackButton({ to = '/map', label = 'Карта' }: BackButtonProps) {
+export default function BackButton({ to = '/egg/map', label = 'Карта' }: BackButtonProps) {
   const router = useRouter();
 
   const handleClick = () => {

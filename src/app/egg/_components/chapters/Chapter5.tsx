@@ -475,7 +475,7 @@ export default function Chapter5() {
 
               <div className="pt-8 border-t border-ink/10 flex justify-center">
                 <button
-                  onClick={() => router.push('/')}
+                  onClick={() => router.push('/egg')}
                   className="text-ink/60 hover:text-ink underline text-sm"
                 >
                   Вернуться на главную
